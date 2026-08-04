@@ -1,0 +1,3025 @@
+<!doctype html>
+<html lang="en" data-theme="system">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Picturesque product and software architecture roadmap."
+    />
+    <title>Picturesque — Product &amp; Architecture Roadmap</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0a0d14;
+        --bg-raised: #0f1420;
+        --panel: rgba(19, 25, 39, 0.78);
+        --panel-solid: #131927;
+        --panel-soft: rgba(255, 255, 255, 0.035);
+        --text: #f4f6fb;
+        --text-soft: #c7cedd;
+        --muted: #8f9aad;
+        --line: rgba(166, 179, 204, 0.17);
+        --line-strong: rgba(166, 179, 204, 0.28);
+        --mint: #86e5c0;
+        --mint-strong: #62d9aa;
+        --mint-soft: rgba(134, 229, 192, 0.13);
+        --lavender: #b6a7ff;
+        --lavender-soft: rgba(182, 167, 255, 0.13);
+        --blue: #8cbcff;
+        --blue-soft: rgba(140, 188, 255, 0.13);
+        --amber: #f3c878;
+        --amber-soft: rgba(243, 200, 120, 0.14);
+        --rose: #f39eb8;
+        --rose-soft: rgba(243, 158, 184, 0.13);
+        --shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+        --radius-lg: 28px;
+        --radius-md: 18px;
+        --radius-sm: 12px;
+        --content: 1240px;
+      }
+
+      html[data-theme="light"] {
+        color-scheme: light;
+        --bg: #f5f6f3;
+        --bg-raised: #ffffff;
+        --panel: rgba(255, 255, 255, 0.84);
+        --panel-solid: #ffffff;
+        --panel-soft: rgba(23, 31, 45, 0.035);
+        --text: #161b24;
+        --text-soft: #394355;
+        --muted: #657084;
+        --line: rgba(34, 45, 63, 0.12);
+        --line-strong: rgba(34, 45, 63, 0.21);
+        --mint: #168c68;
+        --mint-strong: #087452;
+        --mint-soft: rgba(22, 140, 104, 0.1);
+        --lavender: #6e5bd1;
+        --lavender-soft: rgba(110, 91, 209, 0.1);
+        --blue: #2f72bf;
+        --blue-soft: rgba(47, 114, 191, 0.1);
+        --amber: #986710;
+        --amber-soft: rgba(152, 103, 16, 0.1);
+        --rose: #b94c72;
+        --rose-soft: rgba(185, 76, 114, 0.1);
+        --shadow: 0 24px 70px rgba(31, 39, 52, 0.12);
+      }
+
+      @media (prefers-color-scheme: light) {
+        html[data-theme="system"] {
+          color-scheme: light;
+          --bg: #f5f6f3;
+          --bg-raised: #ffffff;
+          --panel: rgba(255, 255, 255, 0.84);
+          --panel-solid: #ffffff;
+          --panel-soft: rgba(23, 31, 45, 0.035);
+          --text: #161b24;
+          --text-soft: #394355;
+          --muted: #657084;
+          --line: rgba(34, 45, 63, 0.12);
+          --line-strong: rgba(34, 45, 63, 0.21);
+          --mint: #168c68;
+          --mint-strong: #087452;
+          --mint-soft: rgba(22, 140, 104, 0.1);
+          --lavender: #6e5bd1;
+          --lavender-soft: rgba(110, 91, 209, 0.1);
+          --blue: #2f72bf;
+          --blue-soft: rgba(47, 114, 191, 0.1);
+          --amber: #986710;
+          --amber-soft: rgba(152, 103, 16, 0.1);
+          --rose: #b94c72;
+          --rose-soft: rgba(185, 76, 114, 0.1);
+          --shadow: 0 24px 70px rgba(31, 39, 52, 0.12);
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        background:
+          radial-gradient(circle at 12% -8%, rgba(134, 229, 192, 0.13), transparent 32rem),
+          radial-gradient(circle at 91% 9%, rgba(182, 167, 255, 0.12), transparent 31rem),
+          var(--bg);
+        color: var(--text);
+        font-family:
+          Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        font-kerning: normal;
+        text-rendering: optimizeLegibility;
+      }
+
+      button,
+      summary {
+        font: inherit;
+      }
+
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      button:focus-visible,
+      a:focus-visible,
+      summary:focus-visible {
+        outline: 3px solid color-mix(in srgb, var(--mint) 72%, transparent);
+        outline-offset: 3px;
+      }
+
+      .skip-link {
+        position: fixed;
+        z-index: 100;
+        top: 12px;
+        left: 12px;
+        padding: 10px 14px;
+        transform: translateY(-160%);
+        border-radius: 10px;
+        background: var(--text);
+        color: var(--bg);
+        text-decoration: none;
+      }
+
+      .skip-link:focus {
+        transform: translateY(0);
+      }
+
+      .reading-progress {
+        position: fixed;
+        z-index: 80;
+        inset: 0 0 auto;
+        height: 3px;
+        background: transparent;
+      }
+
+      .reading-progress span {
+        display: block;
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, var(--mint), var(--lavender));
+      }
+
+      .shell {
+        width: min(calc(100% - 40px), var(--content));
+        margin-inline: auto;
+      }
+
+      .topbar {
+        position: sticky;
+        z-index: 50;
+        top: 0;
+        border-bottom: 1px solid var(--line);
+        background: color-mix(in srgb, var(--bg) 86%, transparent);
+        backdrop-filter: blur(18px);
+      }
+
+      .topbar-inner {
+        display: flex;
+        min-height: 68px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 11px;
+        color: var(--text);
+        font-weight: 760;
+        letter-spacing: -0.02em;
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border: 1px solid color-mix(in srgb, var(--mint) 52%, var(--line));
+        border-radius: 11px;
+        background: linear-gradient(145deg, var(--mint-soft), var(--lavender-soft));
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      }
+
+      .brand-mark svg {
+        width: 20px;
+        height: 20px;
+        stroke: var(--mint);
+      }
+
+      .topnav {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .topnav a {
+        padding: 8px 10px;
+        border-radius: 9px;
+        color: var(--muted);
+        font-size: 0.84rem;
+        font-weight: 650;
+        text-decoration: none;
+        transition: 160ms ease;
+      }
+
+      .topnav a:hover,
+      .topnav a[aria-current="location"] {
+        background: var(--panel-soft);
+        color: var(--text);
+      }
+
+      .top-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .icon-button,
+      .text-button {
+        display: inline-flex;
+        min-height: 38px;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        background: var(--panel-soft);
+        color: var(--text-soft);
+        cursor: pointer;
+        transition: 160ms ease;
+      }
+
+      .icon-button {
+        width: 38px;
+        padding: 0;
+      }
+
+      .text-button {
+        padding: 0 13px;
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
+      .icon-button:hover,
+      .text-button:hover {
+        border-color: var(--line-strong);
+        background: var(--panel);
+        color: var(--text);
+      }
+
+      .icon-button svg,
+      .text-button svg {
+        width: 17px;
+        height: 17px;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.8;
+      }
+
+      .hero {
+        padding: 88px 0 56px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.72fr);
+        align-items: end;
+        gap: 60px;
+      }
+
+      .eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 18px;
+        color: var(--mint);
+        font-size: 0.76rem;
+        font-weight: 790;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        width: 24px;
+        height: 1px;
+        background: currentColor;
+        content: "";
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 900px;
+        margin-bottom: 24px;
+        font-size: clamp(3.3rem, 7.2vw, 6.7rem);
+        font-weight: 740;
+        letter-spacing: -0.025em;
+        line-height: 0.98;
+      }
+
+      .hero-gradient {
+        color: transparent;
+        background: linear-gradient(100deg, var(--text) 5%, var(--mint) 62%, var(--lavender));
+        background-clip: text;
+        -webkit-background-clip: text;
+      }
+
+      .hero-copy {
+        max-width: 720px;
+        margin-bottom: 0;
+        color: var(--text-soft);
+        font-size: clamp(1.05rem, 2vw, 1.28rem);
+        line-height: 1.65;
+      }
+
+      .hero-meta {
+        padding: 24px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .meta-row {
+        display: grid;
+        grid-template-columns: 112px 1fr;
+        gap: 18px;
+        padding: 13px 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .meta-row:first-child {
+        padding-top: 0;
+      }
+
+      .meta-row:last-child {
+        padding-bottom: 0;
+        border-bottom: 0;
+      }
+
+      .meta-label {
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-weight: 720;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .meta-value {
+        color: var(--text-soft);
+        font-size: 0.92rem;
+        font-weight: 620;
+      }
+
+      .decision-strip {
+        display: grid;
+        margin: 42px 0 0;
+        grid-template-columns: repeat(4, 1fr);
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        background: var(--panel);
+      }
+
+      .decision-stat {
+        min-height: 118px;
+        padding: 24px;
+        border-right: 1px solid var(--line);
+      }
+
+      .decision-stat:last-child {
+        border-right: 0;
+      }
+
+      .decision-stat strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 1.15rem;
+        letter-spacing: -0.025em;
+      }
+
+      .decision-stat span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.83rem;
+        line-height: 1.45;
+      }
+
+      .review-toolbar {
+        display: grid;
+        margin: 24px 0 0;
+        grid-template-columns: minmax(260px, 0.72fr) minmax(480px, 1.28fr);
+        align-items: center;
+        gap: 32px;
+        padding: 20px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        background: var(--panel);
+      }
+
+      .review-toolbar-copy {
+        display: grid;
+        grid-template-columns: 38px minmax(0, 1fr);
+        align-items: center;
+        gap: 13px;
+      }
+
+      .review-toolbar-icon {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        border: 1px solid color-mix(in srgb, var(--mint) 28%, var(--line));
+        border-radius: 11px;
+        background: var(--mint-soft);
+        color: var(--mint);
+      }
+
+      .review-toolbar-icon svg {
+        width: 18px;
+        height: 18px;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.8;
+      }
+
+      .review-toolbar-copy strong {
+        display: block;
+        margin-bottom: 2px;
+        font-size: 0.9rem;
+        letter-spacing: -0.01em;
+      }
+
+      .review-toolbar-copy p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 0.77rem;
+        line-height: 1.45;
+      }
+
+      .lens-panel {
+        min-width: 0;
+      }
+
+      .lens-controls {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        align-items: center;
+        gap: 5px;
+        padding: 5px;
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        background: var(--panel-soft);
+      }
+
+      .lens-button {
+        display: inline-flex;
+        min-width: 0;
+        min-height: 38px;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 0 10px;
+        border: 1px solid transparent;
+        border-radius: 9px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 0.76rem;
+        font-weight: 720;
+        white-space: nowrap;
+      }
+
+      .lens-button:hover {
+        background: var(--panel-soft);
+        color: var(--text);
+      }
+
+      .lens-button[aria-pressed="true"] {
+        border-color: var(--line-strong);
+        background: var(--panel-solid);
+        color: var(--text);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+      }
+
+      .lens-dot {
+        width: 7px;
+        height: 7px;
+        flex: 0 0 auto;
+        border-radius: 50%;
+        background: var(--muted);
+      }
+
+      .lens-button[data-lens="all"] .lens-dot {
+        background: linear-gradient(135deg, var(--mint) 0 48%, var(--lavender) 52% 100%);
+      }
+
+      .lens-button[data-lens="product"] .lens-dot {
+        background: var(--lavender);
+      }
+
+      .lens-button[data-lens="architecture"] .lens-dot {
+        background: var(--mint);
+      }
+
+      .lens-button[data-lens="platform"] .lens-dot {
+        background: var(--blue);
+      }
+
+      .lens-button[data-lens="quality"] .lens-dot {
+        background: var(--amber);
+      }
+
+      .lens-status {
+        margin: 8px 4px 0;
+        color: var(--muted);
+        font-size: 0.72rem;
+        line-height: 1.4;
+      }
+
+      .filterable[hidden] {
+        display: none !important;
+      }
+
+      main {
+        padding-bottom: 96px;
+      }
+
+      section {
+        scroll-margin-top: 92px;
+        padding: 74px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .section-header {
+        display: grid;
+        margin-bottom: 34px;
+        grid-template-columns: minmax(0, 5fr) minmax(300px, 7fr);
+        align-items: end;
+        gap: 48px;
+      }
+
+      .section-kicker {
+        margin: 0 0 12px;
+        color: var(--mint);
+        font-size: 0.74rem;
+        font-weight: 790;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        margin-bottom: 0;
+        font-size: clamp(2.2rem, 5vw, 4rem);
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        line-height: 1.04;
+      }
+
+      .section-intro {
+        margin-bottom: 0;
+        color: var(--text-soft);
+        font-size: 1.02rem;
+        line-height: 1.7;
+      }
+
+      .north-star-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+        gap: 20px;
+      }
+
+      .callout,
+      .principles {
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
+        background: var(--panel);
+      }
+
+      .callout {
+        position: relative;
+        min-height: 330px;
+        overflow: hidden;
+        padding: 38px;
+      }
+
+      .callout::after {
+        position: absolute;
+        right: -76px;
+        bottom: -92px;
+        width: 300px;
+        height: 300px;
+        border: 1px solid color-mix(in srgb, var(--mint) 28%, transparent);
+        border-radius: 50%;
+        box-shadow:
+          0 0 0 44px color-mix(in srgb, var(--mint) 3%, transparent),
+          0 0 0 88px color-mix(in srgb, var(--lavender) 2%, transparent);
+        content: "";
+      }
+
+      .callout-label {
+        color: var(--mint);
+        font-size: 0.77rem;
+        font-weight: 790;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .callout blockquote {
+        position: relative;
+        z-index: 1;
+        max-width: 740px;
+        margin: 62px 0 0;
+        font-size: clamp(1.65rem, 3.4vw, 2.8rem);
+        font-weight: 610;
+        letter-spacing: -0.045em;
+        line-height: 1.18;
+      }
+
+      .principles {
+        display: grid;
+        padding: 18px;
+        gap: 4px;
+      }
+
+      .principle {
+        display: grid;
+        grid-template-columns: 34px 1fr;
+        gap: 14px;
+        padding: 16px;
+        border-radius: 14px;
+      }
+
+      .principle:hover {
+        background: var(--panel-soft);
+      }
+
+      .principle-index {
+        color: var(--mint);
+        font-size: 0.76rem;
+        font-weight: 790;
+        letter-spacing: 0.1em;
+      }
+
+      .principle strong {
+        display: block;
+        margin-bottom: 3px;
+        letter-spacing: -0.015em;
+      }
+
+      .principle p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 0.87rem;
+        line-height: 1.5;
+      }
+
+      .journey {
+        display: grid;
+        margin-top: 20px;
+        grid-template-columns: repeat(6, 1fr);
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        background: var(--panel-soft);
+      }
+
+      .journey-step {
+        position: relative;
+        min-height: 148px;
+        padding: 24px 20px;
+        border-right: 1px solid var(--line);
+      }
+
+      .journey-step:last-child {
+        border-right: 0;
+      }
+
+      .journey-step:not(:last-child)::after {
+        position: absolute;
+        z-index: 1;
+        top: 28px;
+        right: -7px;
+        width: 12px;
+        height: 12px;
+        transform: rotate(45deg);
+        border-top: 1px solid var(--line-strong);
+        border-right: 1px solid var(--line-strong);
+        background: var(--bg-raised);
+        content: "";
+      }
+
+      .journey-step span {
+        color: var(--muted);
+        font-size: 0.69rem;
+        font-weight: 780;
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+      }
+
+      .journey-step strong {
+        display: block;
+        margin: 22px 0 5px;
+        font-size: 1rem;
+      }
+
+      .journey-step p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 0.78rem;
+        line-height: 1.45;
+      }
+
+      .architecture-decision {
+        display: grid;
+        margin-bottom: 22px;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 16px;
+        padding: 18px 20px;
+        border: 1px solid color-mix(in srgb, var(--mint) 30%, var(--line));
+        border-radius: 15px;
+        background: var(--mint-soft);
+      }
+
+      .architecture-decision svg {
+        width: 22px;
+        height: 22px;
+        fill: none;
+        stroke: var(--mint);
+        stroke-width: 1.8;
+      }
+
+      .architecture-decision strong {
+        font-size: 0.98rem;
+      }
+
+      .architecture-decision p {
+        margin: 2px 0 0;
+        color: var(--text-soft);
+        font-size: 0.86rem;
+      }
+
+      .status-pill,
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        white-space: nowrap;
+        font-size: 0.68rem;
+        font-weight: 780;
+        letter-spacing: 0.075em;
+        text-transform: uppercase;
+      }
+
+      .status-pill {
+        min-height: 27px;
+        padding: 0 10px;
+        background: color-mix(in srgb, var(--bg-raised) 52%, transparent);
+        color: var(--mint);
+      }
+
+      .architecture-map {
+        margin: 0;
+        padding: 28px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
+        background:
+          linear-gradient(var(--panel), var(--panel)),
+          repeating-linear-gradient(0deg, transparent 0 29px, var(--line) 30px),
+          repeating-linear-gradient(90deg, transparent 0 29px, var(--line) 30px);
+        box-shadow: var(--shadow);
+      }
+
+      .architecture-row {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .architecture-row > :first-child {
+        grid-column: span 2;
+      }
+
+      .architecture-row + .flow-connector {
+        margin: 10px 0;
+      }
+
+      .architecture-box {
+        min-height: 112px;
+        padding: 18px;
+        border: 1px solid var(--line-strong);
+        border-radius: 14px;
+        background: color-mix(in srgb, var(--panel-solid) 93%, transparent);
+      }
+
+      .architecture-box.core {
+        border-color: color-mix(in srgb, var(--mint) 35%, var(--line));
+        background: color-mix(in srgb, var(--mint-soft) 70%, var(--panel-solid));
+      }
+
+      .architecture-box.optional {
+        border-style: dashed;
+      }
+
+      .architecture-box .box-label {
+        display: block;
+        margin-bottom: 12px;
+        color: var(--muted);
+        font-size: 0.68rem;
+        font-weight: 790;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .architecture-box strong {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 0.96rem;
+        letter-spacing: -0.018em;
+      }
+
+      .architecture-box p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 0.78rem;
+        line-height: 1.45;
+      }
+
+      .flow-connector {
+        display: flex;
+        height: 28px;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted);
+      }
+
+      .flow-connector::before {
+        width: 1px;
+        height: 100%;
+        background: var(--line-strong);
+        content: "";
+      }
+
+      .core-row {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .adapter-row {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .adapter-row > :first-child {
+        grid-column: span 2;
+      }
+
+      .architecture-caption {
+        display: flex;
+        margin-top: 18px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+
+      .architecture-caption p {
+        max-width: 780px;
+        margin: 0;
+      }
+
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        white-space: nowrap;
+      }
+
+      .legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .legend i {
+        width: 12px;
+        height: 12px;
+        border: 1px solid var(--line-strong);
+        border-radius: 4px;
+        background: var(--panel-solid);
+      }
+
+      .legend .core-key {
+        border-color: color-mix(in srgb, var(--mint) 45%, var(--line));
+        background: var(--mint-soft);
+      }
+
+      .legend .optional-key {
+        border-style: dashed;
+      }
+
+      .boundary-grid {
+        display: grid;
+        margin-top: 20px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+
+      .boundary-card {
+        padding: 22px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        background: var(--panel-soft);
+      }
+
+      .boundary-card code {
+        color: var(--mint);
+        font-family: "SFMono-Regular", Consolas, monospace;
+        font-size: 0.81rem;
+      }
+
+      .boundary-card h3 {
+        margin: 20px 0 8px;
+        font-size: 1rem;
+        letter-spacing: -0.02em;
+      }
+
+      .boundary-card p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 0.84rem;
+        line-height: 1.55;
+      }
+
+      .timeline-note {
+        display: flex;
+        margin-bottom: 22px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        color: var(--muted);
+        font-size: 0.84rem;
+      }
+
+      .timeline-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .roadmap-list {
+        position: relative;
+        display: grid;
+        gap: 14px;
+      }
+
+      .roadmap-list::before {
+        position: absolute;
+        top: 28px;
+        bottom: 28px;
+        left: 36px;
+        width: 1px;
+        background: linear-gradient(var(--mint), var(--lavender), var(--blue), transparent);
+        content: "";
+      }
+
+      .milestone {
+        position: relative;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        background: var(--panel);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+      }
+
+      .milestone summary {
+        display: grid;
+        min-height: 104px;
+        grid-template-columns: 72px minmax(0, 1fr) auto 24px;
+        align-items: center;
+        gap: 20px;
+        padding: 18px 24px 18px 0;
+        cursor: pointer;
+        list-style: none;
+      }
+
+      .milestone summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .milestone-number {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        width: 38px;
+        height: 38px;
+        margin: auto;
+        place-items: center;
+        border: 1px solid color-mix(in srgb, var(--mint) 40%, var(--line));
+        border-radius: 12px;
+        background: var(--panel-solid);
+        color: var(--mint);
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+      }
+
+      .milestone-title span {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--muted);
+        font-size: 0.69rem;
+        font-weight: 780;
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+      }
+
+      .milestone-title h3 {
+        margin: 0;
+        font-size: clamp(1.15rem, 2vw, 1.45rem);
+        letter-spacing: -0.035em;
+      }
+
+      .milestone-tags {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 6px;
+      }
+
+      .tag {
+        min-height: 24px;
+        padding: 0 9px;
+        color: var(--muted);
+      }
+
+      .tag.product {
+        border-color: color-mix(in srgb, var(--lavender) 35%, var(--line));
+        background: var(--lavender-soft);
+        color: var(--lavender);
+      }
+
+      .tag.architecture {
+        border-color: color-mix(in srgb, var(--mint) 35%, var(--line));
+        background: var(--mint-soft);
+        color: var(--mint);
+      }
+
+      .tag.platform {
+        border-color: color-mix(in srgb, var(--blue) 35%, var(--line));
+        background: var(--blue-soft);
+        color: var(--blue);
+      }
+
+      .tag.quality {
+        border-color: color-mix(in srgb, var(--amber) 35%, var(--line));
+        background: var(--amber-soft);
+        color: var(--amber);
+      }
+
+      .chevron {
+        width: 10px;
+        height: 10px;
+        transform: rotate(45deg);
+        border-right: 1.5px solid var(--muted);
+        border-bottom: 1.5px solid var(--muted);
+        transition: 180ms ease;
+      }
+
+      details[open] .chevron {
+        transform: rotate(225deg) translate(-2px, -2px);
+      }
+
+      .milestone-body {
+        display: grid;
+        margin-left: 72px;
+        grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.65fr);
+        gap: 28px;
+        padding: 4px 28px 28px 20px;
+      }
+
+      .workstreams {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .workstream {
+        min-height: 132px;
+        padding: 17px;
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        background: var(--panel-soft);
+      }
+
+      .workstream .tag {
+        margin-bottom: 14px;
+      }
+
+      .workstream strong {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+      }
+
+      .workstream p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 0.8rem;
+        line-height: 1.5;
+      }
+
+      .exit-gate {
+        padding: 20px;
+        border: 1px solid color-mix(in srgb, var(--mint) 28%, var(--line));
+        border-radius: 14px;
+        background: var(--mint-soft);
+      }
+
+      .exit-gate span {
+        display: block;
+        margin-bottom: 12px;
+        color: var(--mint);
+        font-size: 0.69rem;
+        font-weight: 800;
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+      }
+
+      .exit-gate p {
+        margin-bottom: 0;
+        color: var(--text-soft);
+        font-size: 0.84rem;
+        line-height: 1.55;
+      }
+
+      .first-moves {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+
+      .move-card {
+        position: relative;
+        min-height: 280px;
+        padding: 26px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        background: var(--panel);
+      }
+
+      .move-card::after {
+        position: absolute;
+        right: -14px;
+        bottom: -44px;
+        color: var(--panel-soft);
+        font-size: 10rem;
+        font-weight: 850;
+        letter-spacing: -0.1em;
+        line-height: 1;
+        content: attr(data-number);
+      }
+
+      .move-card > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .move-label {
+        color: var(--mint);
+        font-size: 0.7rem;
+        font-weight: 790;
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+      }
+
+      .move-card h3 {
+        margin: 28px 0 10px;
+        font-size: 1.3rem;
+        letter-spacing: -0.035em;
+      }
+
+      .move-card p {
+        color: var(--muted);
+        font-size: 0.86rem;
+        line-height: 1.58;
+      }
+
+      .move-card ul {
+        margin: 18px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .move-card li {
+        position: relative;
+        margin-top: 8px;
+        padding-left: 17px;
+        color: var(--text-soft);
+        font-size: 0.8rem;
+      }
+
+      .move-card li::before {
+        position: absolute;
+        top: 0.72em;
+        left: 0;
+        width: 6px;
+        height: 6px;
+        transform: translateY(-50%);
+        border-radius: 50%;
+        background: var(--mint);
+        content: "";
+      }
+
+      .decision-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+        gap: 20px;
+      }
+
+      .decision-table-wrap,
+      .option-stack {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        background: var(--panel);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 16px 18px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      tr:last-child td {
+        border-bottom: 0;
+      }
+
+      th {
+        color: var(--muted);
+        font-size: 0.69rem;
+        font-weight: 790;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      td {
+        color: var(--text-soft);
+        font-size: 0.83rem;
+      }
+
+      td:first-child {
+        color: var(--text);
+        font-weight: 680;
+      }
+
+      .state {
+        display: inline-flex;
+        min-height: 24px;
+        align-items: center;
+        padding: 0 9px;
+        border-radius: 999px;
+        font-size: 0.67rem;
+        font-weight: 790;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .state.decided {
+        background: var(--mint-soft);
+        color: var(--mint);
+      }
+
+      .state.provisional {
+        background: var(--blue-soft);
+        color: var(--blue);
+      }
+
+      .state.deferred {
+        background: var(--amber-soft);
+        color: var(--amber);
+      }
+
+      .option-stack {
+        display: grid;
+      }
+
+      .option-card {
+        padding: 24px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .option-card:last-child {
+        border-bottom: 0;
+      }
+
+      .option-card .status-pill {
+        margin-bottom: 16px;
+      }
+
+      .option-card h3 {
+        margin-bottom: 8px;
+        font-size: 1.05rem;
+        letter-spacing: -0.02em;
+      }
+
+      .option-card p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 0.83rem;
+        line-height: 1.55;
+      }
+
+      .quality-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+
+      .quality-card {
+        min-height: 185px;
+        padding: 22px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        background: var(--panel-soft);
+      }
+
+      .quality-icon {
+        display: grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        border-radius: 11px;
+        background: var(--mint-soft);
+        color: var(--mint);
+      }
+
+      .quality-icon svg {
+        width: 19px;
+        height: 19px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.7;
+      }
+
+      .quality-card h3 {
+        margin: 26px 0 7px;
+        font-size: 0.98rem;
+        letter-spacing: -0.02em;
+      }
+
+      .quality-card p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 0.81rem;
+        line-height: 1.5;
+      }
+
+      .risk-table {
+        margin-top: 20px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        background: var(--panel);
+      }
+
+      .review-panel {
+        display: grid;
+        grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+        gap: 44px;
+        padding: 42px;
+        border: 1px solid color-mix(in srgb, var(--lavender) 25%, var(--line));
+        border-radius: var(--radius-lg);
+        background:
+          radial-gradient(circle at 4% 0%, var(--lavender-soft), transparent 24rem),
+          var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .review-panel h2 {
+        font-size: clamp(2.1rem, 4vw, 3.3rem);
+      }
+
+      .review-panel .section-intro {
+        margin-top: 18px;
+        font-size: 0.92rem;
+      }
+
+      .review-questions {
+        display: grid;
+        gap: 10px;
+        counter-reset: questions;
+      }
+
+      .review-question {
+        display: grid;
+        grid-template-columns: 38px 1fr;
+        align-items: start;
+        gap: 14px;
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: color-mix(in srgb, var(--panel-solid) 78%, transparent);
+        counter-increment: questions;
+      }
+
+      .review-question::before {
+        display: grid;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        border-radius: 10px;
+        background: var(--lavender-soft);
+        color: var(--lavender);
+        content: counter(questions, decimal-leading-zero);
+        font-size: 0.71rem;
+        font-weight: 790;
+      }
+
+      .review-question strong {
+        display: block;
+        margin: 3px 0 4px;
+        font-size: 0.91rem;
+      }
+
+      .review-question p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 0.8rem;
+        line-height: 1.48;
+      }
+
+      .references {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .references a {
+        display: inline-flex;
+        min-height: 36px;
+        align-items: center;
+        gap: 8px;
+        padding: 0 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        color: var(--text-soft);
+        font-size: 0.78rem;
+        font-weight: 670;
+        text-decoration: none;
+      }
+
+      .references a:hover {
+        border-color: var(--line-strong);
+        color: var(--text);
+      }
+
+      .references svg {
+        width: 14px;
+        height: 14px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.7;
+      }
+
+      footer {
+        padding: 32px 0 48px;
+        border-top: 1px solid var(--line);
+      }
+
+      .footer-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        color: var(--muted);
+        font-size: 0.77rem;
+      }
+
+      .footer-inner strong {
+        color: var(--text-soft);
+      }
+
+      @media (max-width: 1040px) {
+        .topnav {
+          display: none;
+        }
+
+        .hero-grid,
+        .section-header,
+        .north-star-grid,
+        .decision-grid,
+        .review-panel,
+        .review-toolbar {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-grid,
+        .section-header {
+          gap: 30px;
+        }
+
+        .decision-strip {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .decision-stat:nth-child(2) {
+          border-right: 0;
+        }
+
+        .decision-stat:nth-child(-n + 2) {
+          border-bottom: 1px solid var(--line);
+        }
+
+        .journey {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .journey-step:nth-child(3) {
+          border-right: 0;
+        }
+
+        .journey-step:nth-child(-n + 3) {
+          border-bottom: 1px solid var(--line);
+        }
+
+        .architecture-row,
+        .core-row,
+        .adapter-row {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .boundary-grid,
+        .quality-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .first-moves {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .shell {
+          width: min(calc(100% - 28px), var(--content));
+        }
+
+        .topbar-inner {
+          min-height: 60px;
+        }
+
+        .brand span:last-child {
+          display: none;
+        }
+
+        .text-button span {
+          display: none;
+        }
+
+        .text-button {
+          width: 38px;
+          padding: 0;
+        }
+
+        .hero {
+          padding: 60px 0 42px;
+        }
+
+        h1 {
+          font-size: clamp(3rem, 15vw, 5rem);
+          letter-spacing: -0.018em;
+          line-height: 1;
+        }
+
+        .hero-meta {
+          padding: 20px;
+        }
+
+        .decision-strip {
+          grid-template-columns: 1fr;
+        }
+
+        .decision-stat,
+        .decision-stat:nth-child(2) {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .decision-stat:last-child {
+          border-bottom: 0;
+        }
+
+        .review-toolbar {
+          gap: 18px;
+          padding: 16px;
+        }
+
+        .lens-controls {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .lens-button[data-lens="all"] {
+          grid-column: 1 / -1;
+        }
+
+        section {
+          padding: 56px 0;
+        }
+
+        .callout {
+          min-height: 300px;
+          padding: 28px;
+        }
+
+        .journey,
+        .architecture-row,
+        .core-row,
+        .adapter-row,
+        .boundary-grid,
+        .quality-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .architecture-row > :first-child,
+        .adapter-row > :first-child {
+          grid-column: span 1;
+        }
+
+        .journey-step,
+        .journey-step:nth-child(3) {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .journey-step:last-child {
+          border-bottom: 0;
+        }
+
+        .journey-step:not(:last-child)::after {
+          top: auto;
+          right: 26px;
+          bottom: -7px;
+          transform: rotate(135deg);
+        }
+
+        .architecture-decision {
+          grid-template-columns: auto 1fr;
+        }
+
+        .architecture-decision .status-pill {
+          display: none;
+        }
+
+        .architecture-map {
+          padding: 16px;
+        }
+
+        .architecture-caption,
+        .timeline-note {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .legend {
+          white-space: normal;
+        }
+
+        .milestone summary {
+          grid-template-columns: 56px minmax(0, 1fr) 18px;
+          gap: 10px;
+          padding-right: 16px;
+        }
+
+        .milestone-tags {
+          display: none;
+        }
+
+        .roadmap-list::before {
+          left: 28px;
+        }
+
+        .milestone-body {
+          margin-left: 56px;
+          grid-template-columns: 1fr;
+          padding: 2px 16px 22px 10px;
+        }
+
+        .workstreams {
+          grid-template-columns: 1fr;
+        }
+
+        .decision-table-wrap,
+        .risk-table {
+          overflow-x: auto;
+        }
+
+        table {
+          min-width: 680px;
+        }
+
+        .review-panel {
+          gap: 28px;
+          padding: 28px;
+        }
+
+        .footer-inner {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      @media print {
+        :root,
+        html[data-theme="light"],
+        html[data-theme="system"] {
+          color-scheme: light;
+          --bg: #ffffff;
+          --bg-raised: #ffffff;
+          --panel: #ffffff;
+          --panel-solid: #ffffff;
+          --panel-soft: #f6f7f8;
+          --text: #11151b;
+          --text-soft: #2f3947;
+          --muted: #5f6978;
+          --line: rgba(28, 36, 48, 0.18);
+          --line-strong: rgba(28, 36, 48, 0.28);
+          --mint: #087452;
+          --mint-soft: rgba(8, 116, 82, 0.08);
+          --lavender: #5f4bc1;
+          --lavender-soft: rgba(95, 75, 193, 0.08);
+          --blue: #275f9d;
+          --blue-soft: rgba(39, 95, 157, 0.08);
+          --amber: #81580d;
+          --amber-soft: rgba(129, 88, 13, 0.08);
+          --shadow: none;
+        }
+
+        body {
+          background: #ffffff;
+          font-size: 10pt;
+        }
+
+        .topbar,
+        .review-toolbar,
+        .reading-progress,
+        .timeline-actions {
+          display: none;
+        }
+
+        .hero {
+          padding-top: 28px;
+        }
+
+        h1 {
+          font-size: 50pt;
+        }
+
+        section {
+          padding: 34px 0;
+          break-inside: avoid;
+        }
+
+        .milestone,
+        .move-card,
+        .quality-card,
+        .architecture-map,
+        .review-panel {
+          break-inside: avoid;
+        }
+
+        details:not([open]) > *:not(summary) {
+          display: block;
+        }
+
+        .chevron {
+          display: none;
+        }
+
+        a {
+          text-decoration: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to roadmap</a>
+    <div class="reading-progress" aria-hidden="true"><span></span></div>
+
+    <header class="topbar">
+      <div class="shell topbar-inner">
+        <a class="brand" href="#top" aria-label="Picturesque roadmap home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M4.5 17.5 9.3 12l3.2 3.4 2.6-2.8 4.4 4.9" />
+              <path d="M6.7 4.5h10.6a2.2 2.2 0 0 1 2.2 2.2v10.6a2.2 2.2 0 0 1-2.2 2.2H6.7a2.2 2.2 0 0 1-2.2-2.2V6.7a2.2 2.2 0 0 1 2.2-2.2Z" />
+              <circle cx="15.7" cy="8.5" r="1.3" />
+            </svg>
+          </span>
+          <span>Picturesque / Roadmap</span>
+        </a>
+
+        <nav class="topnav" aria-label="Roadmap sections">
+          <a href="#direction">Direction</a>
+          <a href="#architecture">Architecture</a>
+          <a href="#sequence">Sequence</a>
+          <a href="#decisions">Decisions</a>
+          <a href="#quality">Quality</a>
+          <a href="#review">Review</a>
+        </nav>
+
+        <div class="top-actions">
+          <button class="text-button" id="print-button" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 9V4h10v5M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2" />
+              <path d="M7 14h10v6H7z" />
+            </svg>
+            <span>Print</span>
+          </button>
+          <button
+            class="icon-button"
+            id="theme-button"
+            type="button"
+            aria-label="Change color theme"
+            title="Change color theme"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4" />
+              <circle cx="12" cy="12" r="4" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div id="top" class="shell">
+      <header class="hero">
+        <div class="hero-grid">
+          <div>
+            <p class="eyebrow">Product &amp; architecture roadmap</p>
+            <h1>
+              From precise comparison to a
+              <span class="hero-gradient">complete visual workspace.</span>
+            </h1>
+            <p class="hero-copy">
+              A dependency-led plan for evolving Picturesque into a local-first,
+              cross-platform image design product without sacrificing the speed,
+              fidelity, and privacy of its comparison workflow.
+            </p>
+          </div>
+
+          <aside class="hero-meta" aria-label="Roadmap metadata">
+            <div class="meta-row">
+              <span class="meta-label">Status</span>
+              <span class="meta-value">Design review</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Updated</span>
+              <span class="meta-value">4 August 2026</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Planning</span>
+              <span class="meta-value">Dependency-led, no fixed dates</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Primary stack</span>
+              <span class="meta-value">TypeScript · Web · Tauri later</span>
+            </div>
+          </aside>
+        </div>
+
+        <div class="decision-strip" aria-label="Headline technical decisions">
+          <div class="decision-stat">
+            <strong>TypeScript first</strong>
+            <span>One typed language across the UI, domain model, and renderer.</span>
+          </div>
+          <div class="decision-stat">
+            <strong>Local by default</strong>
+            <span>Projects and source images remain on the user’s device.</span>
+          </div>
+          <div class="decision-stat">
+            <strong>Shared core</strong>
+            <span>Platform-neutral document and rendering packages.</span>
+          </div>
+          <div class="decision-stat">
+            <strong>Native when earned</strong>
+            <span>Tauri, Rust, and Python enter only for concrete use cases.</span>
+          </div>
+        </div>
+
+        <div class="review-toolbar" aria-label="Roadmap review filters">
+          <div class="review-toolbar-copy">
+            <span class="review-toolbar-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M4 6h16M7 12h10M10 18h4" />
+              </svg>
+            </span>
+            <div>
+              <strong>Filter roadmap by discipline</strong>
+              <p>Choose a lens to show its tagged work; the milestone structure stays in place.</p>
+            </div>
+          </div>
+          <div class="lens-panel">
+            <div class="lens-controls" role="group" aria-label="Filter roadmap by discipline">
+              <button class="lens-button" type="button" data-lens="all" aria-pressed="true" aria-controls="main">
+                <span class="lens-dot" aria-hidden="true"></span>All work
+              </button>
+              <button class="lens-button" type="button" data-lens="product" aria-pressed="false" aria-controls="main">
+                <span class="lens-dot" aria-hidden="true"></span>Product
+              </button>
+              <button class="lens-button" type="button" data-lens="architecture" aria-pressed="false" aria-controls="main">
+                <span class="lens-dot" aria-hidden="true"></span>Architecture
+              </button>
+              <button class="lens-button" type="button" data-lens="platform" aria-pressed="false" aria-controls="main">
+                <span class="lens-dot" aria-hidden="true"></span>Platform
+              </button>
+              <button class="lens-button" type="button" data-lens="quality" aria-pressed="false" aria-controls="main">
+                <span class="lens-dot" aria-hidden="true"></span>Quality
+              </button>
+            </div>
+            <p class="lens-status" id="lens-status" aria-live="polite">Showing the complete roadmap.</p>
+          </div>
+        </div>
+      </header>
+
+      <main id="main">
+        <section id="direction" aria-labelledby="direction-title">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker">01 · Direction</p>
+              <h2 id="direction-title">A focused north star</h2>
+            </div>
+            <p class="section-intro">
+              Picturesque should make visual decisions easy: first by revealing
+              differences, then by offering non-destructive tools to refine,
+              compose, and publish images from the same project.
+            </p>
+          </div>
+
+          <div class="north-star-grid">
+            <article class="callout">
+              <span class="callout-label">Product promise</span>
+              <blockquote>
+                Compare with confidence. Design without destroying the source.
+                Move from inspection to expression in one workspace.
+              </blockquote>
+            </article>
+
+            <div class="principles" aria-label="Product principles">
+              <article class="principle">
+                <span class="principle-index">01</span>
+                <div>
+                  <strong>Source-safe</strong>
+                  <p>Every edit is reversible; imported images remain untouched.</p>
+                </div>
+              </article>
+              <article class="principle">
+                <span class="principle-index">02</span>
+                <div>
+                  <strong>Visually exact</strong>
+                  <p>On-screen previews and exports share one rendering model.</p>
+                </div>
+              </article>
+              <article class="principle">
+                <span class="principle-index">03</span>
+                <div>
+                  <strong>Local-first</strong>
+                  <p>Core workflows work offline and never require an account.</p>
+                </div>
+              </article>
+              <article class="principle">
+                <span class="principle-index">04</span>
+                <div>
+                  <strong>Progressive depth</strong>
+                  <p>Simple defaults first; precise controls remain close at hand.</p>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="journey" aria-label="Capability progression">
+            <article class="journey-step">
+              <span>Today</span>
+              <strong>Compare</strong>
+              <p>Map collections and inspect changes precisely.</p>
+            </article>
+            <article class="journey-step">
+              <span>Next</span>
+              <strong>Refine</strong>
+              <p>Crop, align, tune, and annotate non-destructively.</p>
+            </article>
+            <article class="journey-step">
+              <span>Expand</span>
+              <strong>Compose</strong>
+              <p>Arrange images, text, stickers, masks, and layers.</p>
+            </article>
+            <article class="journey-step">
+              <span>Scale</span>
+              <strong>Template</strong>
+              <p>Reuse layouts, styles, assets, and export presets.</p>
+            </article>
+            <article class="journey-step">
+              <span>Reach</span>
+              <strong>Publish</strong>
+              <p>Deliver consistent work across formats and surfaces.</p>
+            </article>
+            <article class="journey-step">
+              <span>Extend</span>
+              <strong>Automate</strong>
+              <p>Batch, script, integrate, and collaborate when useful.</p>
+            </article>
+          </div>
+        </section>
+
+        <section id="architecture" aria-labelledby="architecture-title">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker">02 · Architecture</p>
+              <h2 id="architecture-title">One core, thin shells</h2>
+            </div>
+            <p class="section-intro">
+              The durable asset is not a framework or platform shell. It is a
+              stable document model plus a deterministic rendering engine that
+              can be hosted by the web, desktop, mobile, and automation tools.
+            </p>
+          </div>
+
+          <div class="architecture-decision">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3 4 7v5c0 4.7 3.3 7.6 8 9 4.7-1.4 8-4.3 8-9V7l-8-4Z" />
+              <path d="m8.5 12 2.2 2.2 4.8-5" />
+            </svg>
+            <div>
+              <strong>Selected foundation: shared TypeScript domain and rendering packages</strong>
+              <p>Browser APIs, native file access, and cloud services remain replaceable adapters.</p>
+            </div>
+            <span class="status-pill">Decided</span>
+          </div>
+
+          <figure class="architecture-map" aria-labelledby="architecture-caption">
+            <div class="architecture-row" aria-label="Application shells">
+              <div class="architecture-box">
+                <span class="box-label">Reference application</span>
+                <strong>Web shell</strong>
+                <p>TypeScript UI, keyboard and pointer input, browser storage.</p>
+              </div>
+              <div class="architecture-box">
+                <span class="box-label">Desktop shell</span>
+                <strong>Tauri application</strong>
+                <p>Web UI plus native filesystem, menus, updates, and sharing.</p>
+              </div>
+              <div class="architecture-box optional">
+                <span class="box-label">Decision gate</span>
+                <strong>Mobile shell</strong>
+                <p>Tauri Mobile or Expo, selected through a focused prototype.</p>
+              </div>
+            </div>
+
+            <div class="flow-connector" aria-hidden="true"></div>
+
+            <div class="core-row" aria-label="Shared TypeScript packages">
+              <div class="architecture-box core">
+                <span class="box-label">@picturesque/core</span>
+                <strong>Project model</strong>
+                <p>Schema, migrations, layers, collections, and validation.</p>
+              </div>
+              <div class="architecture-box core">
+                <span class="box-label">@picturesque/core</span>
+                <strong>Commands &amp; history</strong>
+                <p>Document mutations, transactions, undo, and redo.</p>
+              </div>
+              <div class="architecture-box core">
+                <span class="box-label">@picturesque/render</span>
+                <strong>Compositor</strong>
+                <p>Scene evaluation, previews, comparisons, and export.</p>
+              </div>
+              <div class="architecture-box core">
+                <span class="box-label">@picturesque/core</span>
+                <strong>Import &amp; export</strong>
+                <p>Assets, projects, templates, codecs, and safe boundaries.</p>
+              </div>
+            </div>
+
+            <div class="flow-connector" aria-hidden="true"></div>
+
+            <div class="adapter-row" aria-label="Platform and extension adapters">
+              <div class="architecture-box">
+                <span class="box-label">Platform adapters</span>
+                <strong>Storage · Files · Share</strong>
+                <p>IndexedDB, File System Access, Tauri plugins, native share.</p>
+              </div>
+              <div class="architecture-box optional">
+                <span class="box-label">Profiled acceleration</span>
+                <strong>Workers · WebGPU · Rust</strong>
+                <p>Introduced behind interfaces only when measurements justify it.</p>
+              </div>
+              <div class="architecture-box optional">
+                <span class="box-label">Later companion</span>
+                <strong>Python CLI &amp; services</strong>
+                <p>Schema-compatible batch automation and optional AI workflows.</p>
+              </div>
+            </div>
+
+            <figcaption class="architecture-caption" id="architecture-caption">
+              <p>
+                Dependencies point inward: platform code may call the core, but
+                the core never imports browser, Tauri, React, or Python concerns.
+              </p>
+              <span class="legend" aria-label="Diagram legend">
+                <span><i class="core-key"></i> Shared core</span>
+                <span><i></i> Platform</span>
+                <span><i class="optional-key"></i> Deferred</span>
+              </span>
+            </figcaption>
+          </figure>
+
+          <div class="boundary-grid" aria-label="Module boundaries">
+            <article class="boundary-card filterable" data-lenses="architecture quality">
+              <code>@picturesque/core</code>
+              <h3>Plain data, explicit commands</h3>
+              <p>
+                Contains no DOM or canvas objects. A project is serializable;
+                every mutation travels through a typed command and can be tested
+                without a UI.
+              </p>
+            </article>
+            <article class="boundary-card filterable" data-lenses="architecture quality">
+              <code>@picturesque/render</code>
+              <h3>One visual truth</h3>
+              <p>
+                Comparison previews, editor previews, thumbnails, and final
+                exports evaluate the same scene model and color adjustments.
+              </p>
+            </article>
+            <article class="boundary-card filterable" data-lenses="product architecture">
+              <code>@picturesque/ui</code>
+              <h3>Tools are interaction policy</h3>
+              <p>
+                Selection, hover, guides, and transient tool state stay outside
+                the saved document and translate gestures into core commands.
+              </p>
+            </article>
+            <article class="boundary-card filterable" data-lenses="platform architecture">
+              <code>apps/web</code>
+              <h3>Browser reference shell</h3>
+              <p>
+                Hosts the canonical experience using browser-native input,
+                IndexedDB, file handles where available, and offline assets.
+              </p>
+            </article>
+            <article class="boundary-card filterable" data-lenses="platform architecture">
+              <code>apps/desktop</code>
+              <h3>Native capability, minimal policy</h3>
+              <p>
+                Tauri owns operating-system integration. Product logic remains
+                in shared TypeScript unless profiling proves a native need.
+              </p>
+            </article>
+            <article class="boundary-card filterable" data-lenses="platform product">
+              <code>python/picturesque</code>
+              <h3>Automation after stability</h3>
+              <p>
+                A Python package becomes worthwhile after the document schema
+                can support durable batch rendering, validation, and migration.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section id="sequence" aria-labelledby="sequence-title">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker">03 · Delivery sequence</p>
+              <h2 id="sequence-title">Build capability in dependency order</h2>
+            </div>
+            <p class="section-intro">
+              Milestones advance only when their exit gate is met. This protects
+              the document format and rendering contract from being repeatedly
+              rewritten as richer editing and new platforms arrive.
+            </p>
+          </div>
+
+          <div class="timeline-note">
+            <span>Sequence indicates dependency, not a calendar commitment.</span>
+            <div class="timeline-actions">
+              <button class="text-button" id="expand-button" type="button">Expand all</button>
+              <button class="text-button" id="collapse-button" type="button">Collapse all</button>
+            </div>
+          </div>
+
+          <div class="roadmap-list">
+            <details class="milestone" open>
+              <summary>
+                <span class="milestone-number">A</span>
+                <span class="milestone-title">
+                  <span>Foundation · Start here</span>
+                  <h3>Typed, testable baseline</h3>
+                </span>
+                <span class="milestone-tags">
+                  <span class="tag architecture">Architecture</span>
+                  <span class="tag quality">Quality</span>
+                </span>
+                <span class="chevron" aria-hidden="true"></span>
+              </summary>
+              <div class="milestone-body">
+                <div class="workstreams">
+                  <article class="workstream filterable" data-lenses="architecture">
+                    <span class="tag architecture">Architecture</span>
+                    <strong>Adopt Vite and strict TypeScript</strong>
+                    <p>Introduce a modern build without changing current behavior or project files.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="architecture quality">
+                    <span class="tag architecture">Architecture</span>
+                    <strong>Migrate pure modules first</strong>
+                    <p>Move ZIP, project, and renderer logic before converting UI orchestration.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="quality architecture">
+                    <span class="tag quality">Quality</span>
+                    <strong>Freeze compatibility fixtures</strong>
+                    <p>Preserve legacy project identifiers and verify old projects open unchanged.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="quality">
+                    <span class="tag quality">Quality</span>
+                    <strong>Establish continuous checks</strong>
+                    <p>Run type checks, unit tests, schema contracts, and production builds in CI.</p>
+                  </article>
+                </div>
+                <aside class="exit-gate">
+                  <span>Exit gate</span>
+                  <p>
+                    All source modules are TypeScript; existing projects render
+                    identically; compatibility and migration tests cover the
+                    current format; production builds are reproducible.
+                  </p>
+                </aside>
+              </div>
+            </details>
+
+            <details class="milestone">
+              <summary>
+                <span class="milestone-number">B</span>
+                <span class="milestone-title">
+                  <span>Comparison · Product hardening</span>
+                  <h3>A dependable comparison workspace</h3>
+                </span>
+                <span class="milestone-tags">
+                  <span class="tag product">Product</span>
+                  <span class="tag quality">Quality</span>
+                </span>
+                <span class="chevron" aria-hidden="true"></span>
+              </summary>
+              <div class="milestone-body">
+                <div class="workstreams">
+                  <article class="workstream filterable" data-lenses="product architecture">
+                    <span class="tag product">Product</span>
+                    <strong>Command model and history</strong>
+                    <p>Route tuning, mapping, and project operations through undoable commands.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="product quality">
+                    <span class="tag product">Product</span>
+                    <strong>Comparison workflow polish</strong>
+                    <p>Complete keyboard, pointer, touch, accessibility, and recovery behavior.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="quality architecture">
+                    <span class="tag quality">Quality</span>
+                    <strong>Golden rendering cases</strong>
+                    <p>Lock down alignment, filters, overlay, wipe, difference, and export output.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="platform product">
+                    <span class="tag platform">Platform</span>
+                    <strong>Browser file adapters</strong>
+                    <p>Add safer large-project access while retaining portable download-based files.</p>
+                  </article>
+                </div>
+                <aside class="exit-gate">
+                  <span>Exit gate</span>
+                  <p>
+                    A comparison session can be completed without irreversible
+                    actions; exports match previews; keyboard and touch paths are
+                    covered; large projects fail safely with actionable feedback.
+                  </p>
+                </aside>
+              </div>
+            </details>
+
+            <details class="milestone">
+              <summary>
+                <span class="milestone-number">C</span>
+                <span class="milestone-title">
+                  <span>Editor · Non-destructive composition</span>
+                  <h3>Move from pairs to a scene</h3>
+                </span>
+                <span class="milestone-tags">
+                  <span class="tag product">Product</span>
+                  <span class="tag architecture">Architecture</span>
+                </span>
+                <span class="chevron" aria-hidden="true"></span>
+              </summary>
+              <div class="milestone-body">
+                <div class="workstreams">
+                  <article class="workstream filterable" data-lenses="architecture product">
+                    <span class="tag architecture">Architecture</span>
+                    <strong>Scene and layer model</strong>
+                    <p>Represent images, text, shapes, groups, masks, and effects as typed nodes.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="product">
+                    <span class="tag product">Product</span>
+                    <strong>Essential editing tools</strong>
+                    <p>Add crop, transform, text, stickers, alignment, snapping, and layer controls.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="architecture quality">
+                    <span class="tag architecture">Architecture</span>
+                    <strong>Separate document and tool state</strong>
+                    <p>Keep selection, hover, draft gestures, and guides out of saved projects.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="quality product">
+                    <span class="tag quality">Quality</span>
+                    <strong>Color and text fidelity</strong>
+                    <p>Define font loading, color-space behavior, missing assets, and export fallbacks.</p>
+                  </article>
+                </div>
+                <aside class="exit-gate">
+                  <span>Exit gate</span>
+                  <p>
+                    A user can assemble and export a multi-layer design; every
+                    document edit supports undo and redo; reopening a project
+                    preserves layout, assets, fonts, and visual output.
+                  </p>
+                </aside>
+              </div>
+            </details>
+
+            <details class="milestone">
+              <summary>
+                <span class="milestone-number">D</span>
+                <span class="milestone-title">
+                  <span>Templates · Reusable design systems</span>
+                  <h3>Turn successful work into a starting point</h3>
+                </span>
+                <span class="milestone-tags">
+                  <span class="tag product">Product</span>
+                  <span class="tag architecture">Architecture</span>
+                </span>
+                <span class="chevron" aria-hidden="true"></span>
+              </summary>
+              <div class="milestone-body">
+                <div class="workstreams">
+                  <article class="workstream filterable" data-lenses="product architecture">
+                    <span class="tag product">Product</span>
+                    <strong>Template schema</strong>
+                    <p>Define replaceable slots, constraints, defaults, variants, and safe upgrades.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="product">
+                    <span class="tag product">Product</span>
+                    <strong>Reusable styles and assets</strong>
+                    <p>Save palettes, typography, stickers, masks, effects, and export presets.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="product quality">
+                    <span class="tag quality">Quality</span>
+                    <strong>Content and licensing rules</strong>
+                    <p>Track asset sources, font rights, attribution, and portable bundle behavior.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="architecture">
+                    <span class="tag architecture">Architecture</span>
+                    <strong>Responsive layout primitives</strong>
+                    <p>Introduce only the constraints needed by real templates, not a general solver.</p>
+                  </article>
+                </div>
+                <aside class="exit-gate">
+                  <span>Exit gate</span>
+                  <p>
+                    Templates can be installed, customized, shared, and upgraded
+                    without losing user edits; their assets remain auditable and
+                    render consistently across supported viewport sizes.
+                  </p>
+                </aside>
+              </div>
+            </details>
+
+            <details class="milestone">
+              <summary>
+                <span class="milestone-number">E</span>
+                <span class="milestone-title">
+                  <span>Platforms · Desktop first, mobile by evidence</span>
+                  <h3>Bring the workspace closer to the files</h3>
+                </span>
+                <span class="milestone-tags">
+                  <span class="tag platform">Platform</span>
+                  <span class="tag quality">Quality</span>
+                </span>
+                <span class="chevron" aria-hidden="true"></span>
+              </summary>
+              <div class="milestone-body">
+                <div class="workstreams">
+                  <article class="workstream filterable" data-lenses="platform architecture">
+                    <span class="tag platform">Platform</span>
+                    <strong>Tauri desktop shell</strong>
+                    <p>Add native files, drag and drop, menus, recent projects, updates, and sharing.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="platform quality">
+                    <span class="tag quality">Quality</span>
+                    <strong>Native performance budgets</strong>
+                    <p>Measure launch, interaction latency, export time, and memory on target devices.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="platform product">
+                    <span class="tag platform">Platform</span>
+                    <strong>Mobile decision prototype</strong>
+                    <p>Compare Tauri Mobile and Expo using gestures, memory, export, and native UI.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="platform product quality">
+                    <span class="tag product">Product</span>
+                    <strong>Touch-first workflow</strong>
+                    <p>Adapt tools and panels for hands, safe areas, keyboards, sharing, and cameras.</p>
+                  </article>
+                </div>
+                <aside class="exit-gate">
+                  <span>Exit gate</span>
+                  <p>
+                    Desktop handles production projects with native file flows;
+                    mobile technology is selected from a working prototype and a
+                    published decision record, not framework preference.
+                  </p>
+                </aside>
+              </div>
+            </details>
+
+            <details class="milestone">
+              <summary>
+                <span class="milestone-number">F</span>
+                <span class="milestone-title">
+                  <span>Ecosystem · Automation and optional services</span>
+                  <h3>Extend the workflow without weakening trust</h3>
+                </span>
+                <span class="milestone-tags">
+                  <span class="tag platform">Platform</span>
+                  <span class="tag product">Product</span>
+                </span>
+                <span class="chevron" aria-hidden="true"></span>
+              </summary>
+              <div class="milestone-body">
+                <div class="workstreams">
+                  <article class="workstream filterable" data-lenses="platform architecture">
+                    <span class="tag platform">Platform</span>
+                    <strong>Python automation package</strong>
+                    <p>Validate, migrate, inspect, batch render, and export stable project files.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="product quality">
+                    <span class="tag product">Product</span>
+                    <strong>Consent-based intelligence</strong>
+                    <p>Offer optional assistive tools with clear data boundaries and provenance.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="architecture platform">
+                    <span class="tag architecture">Architecture</span>
+                    <strong>Extension API after three integrations</strong>
+                    <p>Generalize only patterns demonstrated by multiple concrete internal uses.</p>
+                  </article>
+                  <article class="workstream filterable" data-lenses="product platform quality">
+                    <span class="tag quality">Quality</span>
+                    <strong>Optional sync and collaboration</strong>
+                    <p>Keep accounts and network storage additive; preserve offline project ownership.</p>
+                  </article>
+                </div>
+                <aside class="exit-gate">
+                  <span>Exit gate</span>
+                  <p>
+                    Automation uses the same schema and rendering contracts as
+                    the applications; every network feature is explicit, secure,
+                    optional, and recoverable to a portable local project.
+                  </p>
+                </aside>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section id="first-moves" aria-labelledby="first-moves-title">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker">04 · Immediate work</p>
+              <h2 id="first-moves-title">The first three changes</h2>
+            </div>
+            <p class="section-intro">
+              Keep each change reviewable and preserve the working comparison
+              product throughout the migration. Structural groundwork lands
+              before feature expansion.
+            </p>
+          </div>
+
+          <div class="first-moves">
+            <article class="move-card filterable" data-number="1" data-lenses="architecture quality">
+              <span class="move-label">Change 1 · Toolchain</span>
+              <h3>Introduce Vite and strict TypeScript</h3>
+              <p>
+                Add the typed build alongside the existing runtime, keep the page
+                and data behavior stable, then make type and production-build
+                checks mandatory.
+              </p>
+              <ul>
+                <li>Strict compiler configuration</li>
+                <li>Vite development and production builds</li>
+                <li>Typed test setup and CI baseline</li>
+              </ul>
+            </article>
+
+            <article class="move-card filterable" data-number="2" data-lenses="architecture quality">
+              <span class="move-label">Change 2 · Core</span>
+              <h3>Extract and type pure modules</h3>
+              <p>
+                Convert project, renderer, storage contracts, and ZIP logic. Add
+                schema types, migration fixtures, and contract tests before UI
+                state is moved.
+              </p>
+              <ul>
+                <li>Versioned project schema</li>
+                <li>Legacy compatibility fixtures</li>
+                <li>Deterministic render cases</li>
+              </ul>
+            </article>
+
+            <article class="move-card filterable" data-number="3" data-lenses="architecture product">
+              <span class="move-label">Change 3 · Application</span>
+              <h3>Separate commands from the UI</h3>
+              <p>
+                Convert the application entry point, move saved mutations behind
+                a command interface, and establish the boundary needed for undo,
+                redo, tools, and future platform shells.
+              </p>
+              <ul>
+                <li>Document store and command dispatcher</li>
+                <li>Transient view and tool state</li>
+                <li>Undo and redo foundation</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section id="decisions" aria-labelledby="decisions-title">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker">05 · Decision record</p>
+              <h2 id="decisions-title">Commit now, defer responsibly</h2>
+            </div>
+            <p class="section-intro">
+              Early decisions protect momentum; deferred decisions preserve
+              options. Every provisional choice has an explicit point at which
+              evidence replaces assumptions.
+            </p>
+          </div>
+
+          <div class="decision-grid">
+            <div class="decision-table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Decision</th>
+                    <th>Status</th>
+                    <th>Rationale or trigger</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="filterable" data-lenses="architecture">
+                    <td>TypeScript is primary</td>
+                    <td><span class="state decided">Decided</span></td>
+                    <td>Best fit for one web-first UI and portable application core.</td>
+                  </tr>
+                  <tr class="filterable" data-lenses="product quality">
+                    <td>Local-first is the default</td>
+                    <td><span class="state decided">Decided</span></td>
+                    <td>Core workflows work offline; source images are not uploaded implicitly.</td>
+                  </tr>
+                  <tr class="filterable" data-lenses="architecture quality">
+                    <td>Legacy projects remain readable</td>
+                    <td><span class="state decided">Decided</span></td>
+                    <td>Schema versions and fixtures protect existing work through migration.</td>
+                  </tr>
+                  <tr class="filterable" data-lenses="platform architecture">
+                    <td>Tauri for desktop packaging</td>
+                    <td><span class="state provisional">Provisional</span></td>
+                    <td>Confirm after the core boundary and web production build are stable.</td>
+                  </tr>
+                  <tr class="filterable" data-lenses="platform product">
+                    <td>Tauri Mobile or Expo</td>
+                    <td><span class="state deferred">Prototype</span></td>
+                    <td>Choose from gesture latency, memory, export, and native integration evidence.</td>
+                  </tr>
+                  <tr class="filterable" data-lenses="architecture quality">
+                    <td>GPU or Rust acceleration</td>
+                    <td><span class="state deferred">Deferred</span></td>
+                    <td>Add only after profiling identifies a stable, high-value bottleneck.</td>
+                  </tr>
+                  <tr class="filterable" data-lenses="platform architecture">
+                    <td>Python package</td>
+                    <td><span class="state deferred">Deferred</span></td>
+                    <td>Publish when the schema supports useful automation and batch rendering.</td>
+                  </tr>
+                  <tr class="filterable" data-lenses="product platform quality">
+                    <td>Cloud collaboration</td>
+                    <td><span class="state deferred">Deferred</span></td>
+                    <td>Consider after the editor is stable; keep it optional and portable.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <aside class="option-stack" aria-label="Architecture options considered">
+              <article class="option-card">
+                <span class="status-pill">Selected</span>
+                <h3>Shared TypeScript core</h3>
+                <p>
+                  Keeps domain logic close to every interactive client, minimizes
+                  bridges, and preserves a direct path from browser prototype to
+                  desktop and mobile shells.
+                </p>
+              </article>
+              <article class="option-card">
+                <span class="status-pill" style="color: var(--amber)">Not selected</span>
+                <h3>Python-centered application core</h3>
+                <p>
+                  Strong for offline processing and automation, but introduces a
+                  deployment or runtime bridge in browsers and mobile clients.
+                  Python remains a later companion instead.
+                </p>
+              </article>
+              <article class="option-card">
+                <span class="status-pill" style="color: var(--blue)">Open gate</span>
+                <h3>Mobile shell choice</h3>
+                <p>
+                  No framework commitment until a small editor prototype tests
+                  real assets, multitouch gestures, text input, export memory,
+                  and platform sharing.
+                </p>
+              </article>
+            </aside>
+          </div>
+        </section>
+
+        <section id="quality" aria-labelledby="quality-title">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker">06 · Quality bar</p>
+              <h2 id="quality-title">Trust is a product feature</h2>
+            </div>
+            <p class="section-intro">
+              Image work is valuable and often private. Reliability, fidelity,
+              accessibility, and recoverability are release criteria—not cleanup
+              tasks after a feature ships.
+            </p>
+          </div>
+
+          <div class="quality-grid">
+            <article class="quality-card filterable" data-lenses="quality product">
+              <span class="quality-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3 4 7v5c0 4.7 3.3 7.6 8 9 4.7-1.4 8-4.3 8-9V7l-8-4Z" /></svg>
+              </span>
+              <h3>Privacy</h3>
+              <p>Network activity is explicit. Core projects remain usable offline and export to a portable local file.</p>
+            </article>
+            <article class="quality-card filterable" data-lenses="quality architecture">
+              <span class="quality-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 17.5 9 12l3.2 3.4 2.7-2.9 4.6 5" /><rect x="3.5" y="4" width="17" height="16" rx="2.5" /></svg>
+              </span>
+              <h3>Visual fidelity</h3>
+              <p>Preview and export share a renderer; golden fixtures cover filters, transforms, text, and blend behavior.</p>
+            </article>
+            <article class="quality-card filterable" data-lenses="quality architecture">
+              <span class="quality-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.3-5.7L4 8.6" /><path d="M4 4v4.6h4.6" /></svg>
+              </span>
+              <h3>Recoverability</h3>
+              <p>Atomic saves, migrations, undo history, crash recovery, and clear missing-asset behavior protect user work.</p>
+            </article>
+            <article class="quality-card filterable" data-lenses="quality product">
+              <span class="quality-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2" /><path d="M5 9h14M12 7v14M8.5 21 12 14l3.5 7" /></svg>
+              </span>
+              <h3>Accessibility</h3>
+              <p>Keyboard parity, visible focus, screen-reader names, reduced motion, contrast, zoom, and touch targets ship with tools.</p>
+            </article>
+            <article class="quality-card filterable" data-lenses="quality platform">
+              <span class="quality-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 17V7M20 17V7M7 12h10" /><path d="m7 9-3 3 3 3M17 9l3 3-3 3" /></svg>
+              </span>
+              <h3>Performance budgets</h3>
+              <p>Interaction latency, memory, startup, and export budgets are measured on representative projects before native release.</p>
+            </article>
+            <article class="quality-card filterable" data-lenses="quality architecture">
+              <span class="quality-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M7 4h10v16H7z" /><path d="M9.5 8h5M9.5 12h5M9.5 16h3" /></svg>
+              </span>
+              <h3>Compatibility</h3>
+              <p>Versioned schemas, fixtures, and migrations keep saved projects readable across applications and releases.</p>
+            </article>
+          </div>
+
+          <div class="risk-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Risk</th>
+                  <th>Early signal</th>
+                  <th>Response</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="filterable" data-lenses="architecture quality">
+                  <td>UI orchestration stays too coupled</td>
+                  <td>Small features require edits across event, state, rendering, and persistence code.</td>
+                  <td>Extract commands and the document store during TypeScript migration.</td>
+                </tr>
+                <tr class="filterable" data-lenses="architecture quality">
+                  <td>Project format drifts</td>
+                  <td>Old files need ad hoc branches or platform-specific repair.</td>
+                  <td>Centralize schema versions, migrations, validation, and compatibility fixtures.</td>
+                </tr>
+                <tr class="filterable" data-lenses="quality platform">
+                  <td>Rendering outgrows Canvas 2D</td>
+                  <td>Measured interaction or export budgets fail on representative projects.</td>
+                  <td>Keep a renderer interface; add workers, GPU, or Rust at profiled hotspots.</td>
+                </tr>
+                <tr class="filterable" data-lenses="platform architecture">
+                  <td>Platform behavior diverges</td>
+                  <td>Each shell accumulates its own project or editing rules.</td>
+                  <td>Use thin adapters and run shared contract fixtures in every shell.</td>
+                </tr>
+                <tr class="filterable" data-lenses="platform quality product">
+                  <td>Desktop assumptions fail on mobile</td>
+                  <td>Gesture conflict, memory pressure, or cramped controls appear in the prototype.</td>
+                  <td>Prototype before choosing the shell; redesign workflows for touch where needed.</td>
+                </tr>
+                <tr class="filterable" data-lenses="product quality platform">
+                  <td>Connected features weaken privacy</td>
+                  <td>Core actions silently depend on accounts, uploads, or inaccessible cloud state.</td>
+                  <td>Require explicit capability boundaries and portable local recovery paths.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="review" aria-labelledby="review-title">
+          <div class="review-panel">
+            <div>
+              <p class="section-kicker">07 · Design review</p>
+              <h2 id="review-title">Questions that change the plan</h2>
+              <p class="section-intro">
+                These choices affect dependency order or architecture. Smaller
+                feature priorities can be decided inside the relevant milestone.
+              </p>
+            </div>
+
+            <div class="review-questions">
+              <article class="review-question">
+                <div>
+                  <strong>Is comparison still the product’s entry point?</strong>
+                  <p>Keeping it first funds a reliable core before broader design tools arrive.</p>
+                </div>
+              </article>
+              <article class="review-question">
+                <div>
+                  <strong>Should desktop precede the complete template system?</strong>
+                  <p>Earlier native files may be more valuable than deeper composition for production workflows.</p>
+                </div>
+              </article>
+              <article class="review-question">
+                <div>
+                  <strong>Which mobile workflow must be excellent first?</strong>
+                  <p>Comparison, quick templates, camera import, or full editing will favor different shells and layouts.</p>
+                </div>
+              </article>
+              <article class="review-question">
+                <div>
+                  <strong>Is Python automation a real early customer need?</strong>
+                  <p>A concrete batch workflow should exist before a public package creates a second compatibility surface.</p>
+                </div>
+              </article>
+              <article class="review-question">
+                <div>
+                  <strong>How long should cloud collaboration remain out of scope?</strong>
+                  <p>Deferring it preserves focus and privacy; bringing it forward changes identity, storage, and conflict design.</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="references" aria-labelledby="references-title">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker">08 · Technical references</p>
+              <h2 id="references-title">Primary documentation</h2>
+            </div>
+            <p class="section-intro">
+              The recommended stack follows the official capabilities and
+              constraints of the technologies being considered.
+            </p>
+          </div>
+
+          <div class="references">
+            <a href="https://www.typescriptlang.org/docs/handbook/intro" target="_blank" rel="noreferrer">
+              TypeScript Handbook
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M10 14 19 5M19 14v5H5V5h5" /></svg>
+            </a>
+            <a href="https://vite.dev/guide/" target="_blank" rel="noreferrer">
+              Vite Guide
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M10 14 19 5M19 14v5H5V5h5" /></svg>
+            </a>
+            <a href="https://v2.tauri.app/start/" target="_blank" rel="noreferrer">
+              Tauri 2
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M10 14 19 5M19 14v5H5V5h5" /></svg>
+            </a>
+            <a href="https://docs.expo.dev/" target="_blank" rel="noreferrer">
+              Expo Documentation
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M10 14 19 5M19 14v5H5V5h5" /></svg>
+            </a>
+            <a href="https://pyodide.org/en/latest/usage/wasm-constraints.html" target="_blank" rel="noreferrer">
+              Pyodide Constraints
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M10 14 19 5M19 14v5H5V5h5" /></svg>
+            </a>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <footer>
+      <div class="shell footer-inner">
+        <span><strong>Picturesque</strong> · Product and architecture roadmap</span>
+        <span>Local-first · Source-safe · Cross-platform</span>
+      </div>
+    </footer>
+
+    <script>
+      (() => {
+        const root = document.documentElement;
+        const themeButton = document.querySelector("#theme-button");
+        const lensButtons = [...document.querySelectorAll(".lens-button")];
+        const lensStatus = document.querySelector("#lens-status");
+        const filterableElements = [...document.querySelectorAll(".filterable")];
+        const milestones = [...document.querySelectorAll(".milestone")];
+        const sectionLinks = [...document.querySelectorAll(".topnav a")];
+        const progressBar = document.querySelector(".reading-progress span");
+        const themes = ["system", "dark", "light"];
+
+        const safeRead = (key, fallback) => {
+          try {
+            return localStorage.getItem(key) || fallback;
+          } catch {
+            return fallback;
+          }
+        };
+
+        const safeWrite = (key, value) => {
+          try {
+            localStorage.setItem(key, value);
+          } catch {
+            // Persistence is optional; the controls remain functional without it.
+          }
+        };
+
+        const themeLabels = {
+          system: "System theme",
+          dark: "Dark theme",
+          light: "Light theme",
+        };
+
+        const applyTheme = (theme) => {
+          const selected = themes.includes(theme) ? theme : "system";
+          root.dataset.theme = selected;
+          themeButton.setAttribute(
+            "aria-label",
+            `${themeLabels[selected]}. Activate to change color theme.`,
+          );
+          themeButton.title = themeLabels[selected];
+          safeWrite("picturesque-roadmap-theme", selected);
+        };
+
+        const applyLens = (lens) => {
+          const selected = lensButtons.some((button) => button.dataset.lens === lens)
+            ? lens
+            : "all";
+
+          lensButtons.forEach((button) => {
+            button.setAttribute("aria-pressed", String(button.dataset.lens === selected));
+          });
+
+          filterableElements.forEach((element) => {
+            const lenses = (element.dataset.lenses || "").split(/\s+/);
+            element.hidden = selected !== "all" && !lenses.includes(selected);
+          });
+
+          if (selected === "all") {
+            lensStatus.textContent = "Showing the complete roadmap.";
+          } else {
+            const visibleCount = filterableElements.filter((element) => !element.hidden).length;
+            const label = selected[0].toUpperCase() + selected.slice(1);
+            lensStatus.textContent = `Showing ${visibleCount} ${label} items; milestone structure remains visible.`;
+          }
+
+          safeWrite("picturesque-roadmap-lens", selected);
+        };
+
+        themeButton.addEventListener("click", () => {
+          const index = themes.indexOf(root.dataset.theme || "system");
+          applyTheme(themes[(index + 1) % themes.length]);
+        });
+
+        lensButtons.forEach((button) => {
+          button.addEventListener("click", () => applyLens(button.dataset.lens));
+        });
+
+        document.querySelector("#print-button").addEventListener("click", () => window.print());
+        document.querySelector("#expand-button").addEventListener("click", () => {
+          milestones.forEach((milestone) => {
+            milestone.open = true;
+          });
+        });
+        document.querySelector("#collapse-button").addEventListener("click", () => {
+          milestones.forEach((milestone) => {
+            milestone.open = false;
+          });
+        });
+
+        const sections = sectionLinks
+          .map((link) => document.querySelector(link.getAttribute("href")))
+          .filter(Boolean);
+
+        if ("IntersectionObserver" in window) {
+          const observer = new IntersectionObserver(
+            (entries) => {
+              const visible = entries
+                .filter((entry) => entry.isIntersecting)
+                .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+              if (!visible) return;
+              sectionLinks.forEach((link) => {
+                const active = link.getAttribute("href") === `#${visible.target.id}`;
+                if (active) {
+                  link.setAttribute("aria-current", "location");
+                } else {
+                  link.removeAttribute("aria-current");
+                }
+              });
+            },
+            { rootMargin: "-20% 0px -68%", threshold: [0, 0.1, 0.5] },
+          );
+          sections.forEach((section) => observer.observe(section));
+        }
+
+        const updateProgress = () => {
+          const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
+          progressBar.style.width = `${progress * 100}%`;
+        };
+
+        window.addEventListener("scroll", updateProgress, { passive: true });
+        window.addEventListener("resize", updateProgress);
+
+        applyTheme(safeRead("picturesque-roadmap-theme", "system"));
+        applyLens(safeRead("picturesque-roadmap-lens", "all"));
+        updateProgress();
+      })();
+    </script>
+  </body>
+</html>

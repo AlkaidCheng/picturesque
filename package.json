@@ -1,0 +1,15 @@
+{
+  "name": "picturesque",
+  "version": "0.1.0",
+  "description": "A local-first visual workspace for comparing and designing with images.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev-server.mjs",
+    "test": "node --test",
+    "check": "node --check src/app.js && node --check src/project.js && node --check src/renderer.js && node --check src/storage.js && node --check src/zip.js && node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

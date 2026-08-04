@@ -31,10 +31,12 @@ interactive version.
 
 ## Run locally
 
-Picturesque requires Node.js 20 or later and currently has no runtime
-dependencies.
+Picturesque requires Node.js 22.12 or a newer supported release. Runtime image
+processing remains browser-native; the development toolchain is installed
+through npm.
 
 ```console
+npm install
 npm run dev
 ```
 
@@ -44,8 +46,15 @@ Open <http://localhost:4173>.
 
 ```console
 npm test
+npm run typecheck
+npm run build
 npm run check
 ```
+
+`npm run check` runs the type checker, unit tests, and a production build.
+During the staged source migration, strict TypeScript checking covers the test
+suite and build configuration; each runtime module joins that gate when it is
+converted.
 
 ## Keyboard shortcuts
 

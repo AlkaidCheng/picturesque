@@ -7,6 +7,12 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed
+
+- Adopted Vite for local development and production builds.
+- Moved unit tests to Vitest with strict TypeScript checking.
+- Added automated validation for supported Node.js releases.
+
 ## [0.1.0] - 2026-08-04
 
 ### Added

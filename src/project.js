@@ -234,6 +234,13 @@ export function removeCollection(project, collectionId) {
   return true;
 }
 
+/**
+ * Selects the collections compared in the active view.
+ *
+ * @param {object} project
+ * @param {string} leftCollectionId
+ * @param {string | null} [rightCollectionId]
+ */
 export function setActiveCollections(project, leftCollectionId, rightCollectionId = null) {
   const left = getCollection(project, leftCollectionId);
   const right = rightCollectionId ? getCollection(project, rightCollectionId) : null;

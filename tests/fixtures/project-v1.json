@@ -1,0 +1,57 @@
+{
+  "format": "frame-match-project",
+  "version": 1,
+  "id": "legacy-project",
+  "name": "Legacy comparison",
+  "kind": "comparison",
+  "createdAt": "2024-01-01T00:00:00.000Z",
+  "updatedAt": "2024-01-01T00:00:00.000Z",
+  "collections": {
+    "left": {
+      "name": "Raw",
+      "images": [
+        {
+          "id": "legacy-left-image",
+          "name": "portrait.jpg",
+          "type": "image/jpeg",
+          "size": 100,
+          "width": 800,
+          "height": 1200,
+          "lastModified": 0,
+          "relativePath": "",
+          "dataUrl": "data:image/jpeg;base64,bGVmdA=="
+        }
+      ]
+    },
+    "right": {
+      "name": "First edit",
+      "images": [
+        {
+          "id": "legacy-right-image",
+          "name": "portrait-clean.png",
+          "type": "image/png",
+          "size": 120,
+          "width": 800,
+          "height": 1200,
+          "lastModified": 0,
+          "relativePath": "",
+          "dataUrl": "data:image/png;base64,cmlnaHQ="
+        }
+      ]
+    }
+  },
+  "pairs": [
+    {
+      "id": "legacy-pair",
+      "leftId": "legacy-left-image",
+      "rightId": "legacy-right-image",
+      "notes": "",
+      "rating": 0,
+      "settings": {
+        "mode": "wipe",
+        "opacity": 44
+      }
+    }
+  ],
+  "selectedPairId": "legacy-pair"
+}

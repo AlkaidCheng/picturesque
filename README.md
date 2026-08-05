@@ -53,8 +53,8 @@ npm run check
 
 `npm run check` runs the type checker, unit tests, and a production build.
 During the staged source migration, strict TypeScript checking covers the test
-suite and build configuration; each runtime module joins that gate when it is
-converted.
+suite, build configuration, and converted runtime modules. Remaining runtime
+modules join the same gate one dependency boundary at a time.
 
 ## Keyboard shortcuts
 

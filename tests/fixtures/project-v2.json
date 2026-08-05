@@ -1,0 +1,104 @@
+{
+  "format": "frame-match-project",
+  "version": 2,
+  "id": "fixture-project-v2",
+  "name": "Frozen version 2 project",
+  "kind": "comparison",
+  "comparisonMode": "difference",
+  "createdAt": "2025-02-03T04:05:06.000Z",
+  "updatedAt": "2025-02-04T05:06:07.000Z",
+  "collections": [
+    {
+      "id": "fixture-collection-source",
+      "name": "Source",
+      "images": [
+        {
+          "id": "fixture-image-source-main",
+          "name": "portrait.jpg",
+          "type": "image/jpeg",
+          "size": 1200000,
+          "width": 1200,
+          "height": 1800,
+          "lastModified": 1704067200000,
+          "relativePath": "raw/portrait.jpg",
+          "dataUrl": "data:image/jpeg;base64,bGVmdC1wb3J0cmFpdA=="
+        },
+        {
+          "id": "fixture-image-source-detail",
+          "name": "detail.png",
+          "type": "image/png",
+          "size": 240000,
+          "width": 640,
+          "height": 480,
+          "lastModified": 1704153600000,
+          "relativePath": "raw/detail.png",
+          "dataUrl": "data:image/png;base64,bGVmdC1kZXRhaWw="
+        }
+      ]
+    },
+    {
+      "id": "fixture-collection-candidate",
+      "name": "Candidate",
+      "images": [
+        {
+          "id": "fixture-image-candidate-main",
+          "name": "portrait-final.webp",
+          "type": "image/webp",
+          "size": 960000,
+          "width": 1500,
+          "height": 2000,
+          "lastModified": 1704240000000,
+          "relativePath": "edited/portrait-final.webp",
+          "dataUrl": "data:image/webp;base64,cmlnaHQtcG9ydHJhaXQ="
+        }
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "id": "fixture-comparison-main",
+      "leftCollectionId": "fixture-collection-source",
+      "rightCollectionId": "fixture-collection-candidate",
+      "pairs": [
+        {
+          "id": "fixture-pair-main",
+          "leftId": "fixture-image-source-main",
+          "rightId": "fixture-image-candidate-main",
+          "notes": "Approved crop",
+          "rating": 4,
+          "settings": {
+            "fit": "cover",
+            "opacity": 63,
+            "showGrid": true,
+            "layers": {
+              "left": {
+                "brightness": 82
+              },
+              "right": {
+                "saturation": 76,
+                "warmth": 12
+              }
+            }
+          }
+        },
+        {
+          "id": "fixture-pair-detail",
+          "leftId": "fixture-image-source-detail",
+          "rightId": null,
+          "notes": "Needs a matching edit",
+          "rating": 1,
+          "settings": {
+            "showLabels": false,
+            "layers": {
+              "right": {
+                "grayscale": 20
+              }
+            }
+          }
+        }
+      ],
+      "selectedPairId": "fixture-pair-main"
+    }
+  ],
+  "activeComparisonId": "fixture-comparison-main"
+}

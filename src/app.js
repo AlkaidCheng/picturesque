@@ -33,6 +33,7 @@ import { renderComparisonExport } from "./comparison-export.js";
 import {
   canExportAnimatedGif,
   coerceExportLongEdge,
+  comparisonArchiveFilename,
   exportExtension,
   exportSizeOptions,
   uniqueExportFilename
@@ -984,6 +985,12 @@ async function exportAll(asZip) {
   }
   const options = exportOptions();
   const mode = getComparisonMode(state.project);
+  const archiveFilename = comparisonArchiveFilename({
+    projectName: state.project.name,
+    leftCollectionName: activeCollection("left")?.name,
+    rightCollectionName: activeCollection("right")?.name,
+    comparisonMode: mode
+  });
   const files = [];
   const usedNames = new Set();
   setExportInteractionBusy(true, options.format === "gif" ? "Preparing GIF export…" : "Preparing export…");
@@ -1007,7 +1014,7 @@ async function exportAll(asZip) {
     if (asZip) {
       setExportIndeterminate("Creating ZIP…");
       const zip = await buildZip(files);
-      downloadBlob(zip, `${safeFilename(state.project.name)}-comparisons.zip`);
+      downloadBlob(zip, archiveFilename);
     }
     showToast(`${pairs.length} comparison${pairs.length === 1 ? "" : "s"} exported${asZip ? " as ZIP" : ""}.`);
   } catch (error) {

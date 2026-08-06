@@ -18,6 +18,11 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Validate types, tests, and production builds together with `npm run check`.
   (#1)
 
+### Fixed
+
+- Name ZIP exports after the project, compared collections, and comparison
+  mode to prevent collisions between different batches. (#5)
+
 ## [0.1.0] - 2026-08-04
 
 ### Added

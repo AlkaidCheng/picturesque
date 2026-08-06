@@ -29,6 +29,14 @@ import {
   setSelectedPairId,
   touchProject
 } from "./project.js";
+import { renderComparisonExport } from "./comparison-export.js";
+import {
+  canExportAnimatedGif,
+  coerceExportLongEdge,
+  exportExtension,
+  exportSizeOptions,
+  uniqueExportFilename
+} from "./export-format.js";
 import { ComparisonRenderer, computeExportSize } from "./renderer.js";
 import {
   deleteBrowserProject,
@@ -79,6 +87,9 @@ const state = {
   dragDepth: 0,
   pointer: null,
   exportBusy: false,
+  exportPreviewToken: 0,
+  exportFormat: "png",
+  exportLongEdges: { static: "2400", gif: "960" },
   importTargetCollectionId: null
 };
 
@@ -729,6 +740,10 @@ function setMode(mode) {
   if (!setComparisonMode(state.project, mode)) return;
   state.blinkPhase = 0;
   markDirty({ controls: true });
+  if (elements.exportDialog.open) {
+    syncGifFormatAvailability({ notify: true });
+    updateExportPreview();
+  }
 }
 
 function updateSetting(input) {
@@ -764,13 +779,56 @@ function exportOptions() {
   };
 }
 
-function exportExtension(format) {
-  return format === "jpeg" ? "jpg" : "png";
+function exportLongEdgeKind(format) {
+  return format === "gif" ? "gif" : "static";
 }
 
-function comparisonFilename(pair, options) {
+function syncExportLongEdgeOptions(format) {
+  const select = $("#exportLongEdge");
+  const kind = exportLongEdgeKind(format);
+  select.replaceChildren(...exportSizeOptions(format).map(({ value, label }) => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = label;
+    return option;
+  }));
+  select.value = coerceExportLongEdge(format, state.exportLongEdges[kind]);
+  state.exportLongEdges[kind] = select.value;
+  $("#exportLongEdgeHelp").textContent = format === "gif"
+    ? "GIF is limited to 1600 px to keep browser memory use predictable."
+    : "The aspect ratio is preserved.";
+}
+
+function setExportFormat(format) {
+  const previousKind = exportLongEdgeKind(state.exportFormat);
+  state.exportLongEdges[previousKind] = $("#exportLongEdge").value;
+  state.exportFormat = format;
+  $("#exportFormat").value = format;
+  syncExportLongEdgeOptions(format);
+}
+
+function syncGifFormatAvailability({ notify = false } = {}) {
+  const formatSelect = $("#exportFormat");
+  const gifOption = formatSelect.querySelector('option[value="gif"]');
+  const available = canExportAnimatedGif(
+    getComparisonMode(state.project),
+    Boolean(activeCollection("right"))
+  );
+  gifOption.disabled = !available;
+  gifOption.textContent = available ? "GIF (animated)" : "GIF (Blink mode only)";
+  $("#exportFormatHelp").textContent = available
+    ? "GIF alternates the mapped A and B images using each pair’s Blink interval."
+    : "Animated GIF becomes available when two collections are compared in Blink mode.";
+  if (!available && formatSelect.value === "gif") {
+    setExportFormat("png");
+    if (notify) showToast("GIF is available only in Blink mode; format changed to PNG.");
+  }
+  return available;
+}
+
+function comparisonFilename(pair, options, mode = getComparisonMode(state.project)) {
   const base = safeFilename(pairDisplayName(state.project, pair).replace(/\.[^/.]+$/, ""));
-  return `${base}-${getComparisonMode(state.project)}.${exportExtension(options.format)}`;
+  return `${base}-${mode}.${exportExtension(options.format)}`;
 }
 
 async function openExportDialog() {
@@ -778,37 +836,125 @@ async function openExportDialog() {
     showToast("Add at least one image before exporting.", "error");
     return;
   }
+  syncGifFormatAvailability({ notify: true });
   elements.exportDialog.showModal();
+  $("#exportFormat").focus();
   await updateExportPreview();
 }
 
 async function updateExportPreview() {
   const pair = selectedPair();
   if (!pair || !elements.exportDialog.open) return;
+  const previewToken = ++state.exportPreviewToken;
+  syncGifFormatAvailability();
   const options = exportOptions();
   rangeProgress($("#exportQuality"));
   $("#exportQualityField").hidden = options.format !== "jpeg";
   $("#exportQualityOutput").textContent = `${Math.round(options.quality * 100)}%`;
   const size = computeExportSize(state.project, pair, options.longEdge === "original" ? Number.NaN : options.longEdge, options.includeLabels);
-  $("#exportPreviewName").textContent = pairDisplayName(state.project, pair);
-  $("#exportPreviewDimensions").textContent = `${size.width} × ${size.height}`;
-  await state.renderer.renderPreview(elements.exportPreviewCanvas, state.project, pair, options);
+  const isGif = options.format === "gif";
+  const formatLabel = options.format === "jpeg" ? "JPEG" : options.format.toUpperCase();
+  const filename = comparisonFilename(pair, options);
+  $("#exportPreviewName").textContent = filename;
+  $("#exportPreviewDimensions").textContent = isGif
+    ? `${size.width} × ${size.height} · 2 frames · ${pair.settings.blinkInterval} ms/frame`
+    : `${size.width} × ${size.height} · ${formatLabel}`;
+  elements.exportPreviewCanvas.setAttribute(
+    "aria-label",
+    isGif
+      ? `Scaled preview of frame A for ${filename}; the exported GIF alternates frames A and B.`
+      : `Scaled preview of ${filename}.`
+  );
+  const currentGifAvailable = Boolean(pair.leftId && pair.rightId);
+  $("#exportCurrentButton").disabled = isGif && !currentGifAvailable;
+  $("#exportCurrentButton").title = isGif && !currentGifAvailable
+    ? "Map an image from both collections to export this GIF."
+    : "";
+  $("#exportCurrentButtonLabel").textContent = isGif ? "Export current GIF" : "Export current";
+  const batchCount = exportablePairs().length;
+  $("#exportZipButton").disabled = batchCount === 0;
+  $("#exportAllIndividualButton").disabled = batchCount === 0;
+  const batchSummary = batchCount
+    ? `${batchCount} mapped pair${batchCount === 1 ? " is" : "s are"} ready for batch export.`
+    : "No mapped pairs are ready for batch export.";
+  const currentSummary = isGif && !currentGifAvailable
+    ? " The current pair needs both an A and B image before it can be exported."
+    : "";
+  const fastPairCount = isGif
+    ? exportablePairs().filter((exportPair) => exportPair.settings.blinkInterval < 400).length
+    : 0;
+  const fastAnimationWarning = fastPairCount
+    ? ` Fast animation warning: ${fastPairCount} mapped pair${fastPairCount === 1 ? " uses" : "s use"} an interval below 400 ms${currentGifAvailable && pair.settings.blinkInterval < 400 ? ", including the current pair" : ""}.`
+    : "";
+  const batchMemoryWarning = isGif && batchCount > 10
+    ? " Large GIF batches can use significant browser memory while the ZIP is assembled."
+    : "";
+  $("#exportNoteText").textContent = isGif
+    ? `GIF exports two continuously looping frames using each pair’s saved Blink interval and tuning. ${batchSummary}${currentSummary}${fastAnimationWarning}${batchMemoryWarning}`
+    : `ZIP creates one ${formatLabel} per mapped pair with the current comparison mode and each pair’s saved tuning. ${batchSummary}`;
+  await state.renderer.renderPreview(
+    elements.exportPreviewCanvas,
+    state.project,
+    pair,
+    options,
+    () => previewToken === state.exportPreviewToken && elements.exportDialog.open
+  );
+}
+
+function setExportIndeterminate(message) {
+  const progress = $("#exportProgress");
+  progress.hidden = false;
+  progress.classList.add("indeterminate");
+  progress.style.removeProperty("--export-progress");
+  progress.removeAttribute("aria-valuenow");
+  progress.removeAttribute("aria-valuemax");
+  progress.setAttribute("aria-valuetext", message);
+  progress.querySelector("strong").textContent = message;
+  $("#exportProgressText").textContent = "Please wait";
+}
+
+function setExportInteractionBusy(busy, message = "Preparing export…") {
+  state.exportBusy = busy;
+  if (busy) state.exportPreviewToken += 1;
+  elements.exportDialog.setAttribute("aria-busy", String(busy));
+  elements.exportDialog.querySelectorAll("button, input, select").forEach((control) => {
+    control.disabled = busy;
+  });
+  if (busy) {
+    setExportIndeterminate(message);
+  } else {
+    elements.exportDialog.removeAttribute("aria-busy");
+    $("#exportProgress").hidden = true;
+    $("#exportProgress").classList.remove("indeterminate");
+    updateExportPreview();
+  }
 }
 
 async function exportCurrent() {
   if (state.exportBusy) return;
   const pair = selectedPair();
   if (!pair) return;
-  state.exportBusy = true;
+  const options = exportOptions();
+  if (options.format === "gif" && (!pair.leftId || !pair.rightId)) {
+    showToast("Map an image from both collections before exporting this GIF.", "error");
+    return;
+  }
+  const mode = getComparisonMode(state.project);
+  setExportInteractionBusy(true, options.format === "gif" ? "Encoding GIF…" : "Rendering comparison…");
   try {
-    const options = exportOptions();
-    const { blob } = await state.renderer.renderBlob(state.project, pair, options);
-    downloadBlob(blob, comparisonFilename(pair, options));
+    const { blob } = await renderComparisonExport(
+      state.renderer,
+      state.project,
+      pair,
+      mode,
+      options
+    );
+    downloadBlob(blob, comparisonFilename(pair, options, mode));
     showToast("Comparison exported.");
   } catch (error) {
     showToast(`Export failed: ${error.message}`, "error", 6000);
   } finally {
-    state.exportBusy = false;
+    setExportInteractionBusy(false);
   }
 }
 
@@ -817,10 +963,15 @@ function exportablePairs() {
   return activePairs().filter((pair) => pair.leftId && pair.rightId);
 }
 
-function setExportProgress(index, total) {
+function setExportProgress(index, total, format) {
   const progress = $("#exportProgress");
   progress.hidden = false;
+  progress.classList.remove("indeterminate");
   progress.style.setProperty("--export-progress", `${total ? index / total * 100 : 0}%`);
+  progress.setAttribute("aria-valuenow", String(index));
+  progress.setAttribute("aria-valuemax", String(total));
+  progress.setAttribute("aria-valuetext", `${index} of ${total}`);
+  progress.querySelector("strong").textContent = format === "gif" ? "Encoding GIFs…" : "Rendering comparisons…";
   $("#exportProgressText").textContent = `${index} / ${total}`;
 }
 
@@ -831,21 +982,30 @@ async function exportAll(asZip) {
     showToast("There are no mapped pairs to export.", "error");
     return;
   }
-  state.exportBusy = true;
   const options = exportOptions();
+  const mode = getComparisonMode(state.project);
   const files = [];
+  const usedNames = new Set();
+  setExportInteractionBusy(true, options.format === "gif" ? "Preparing GIF export…" : "Preparing export…");
   try {
-    setExportProgress(0, pairs.length);
+    setExportProgress(0, pairs.length, options.format);
     for (let index = 0; index < pairs.length; index += 1) {
       const pair = pairs[index];
-      const { blob } = await state.renderer.renderBlob(state.project, pair, options);
-      const name = comparisonFilename(pair, options);
+      const { blob } = await renderComparisonExport(
+        state.renderer,
+        state.project,
+        pair,
+        mode,
+        options
+      );
+      const name = uniqueExportFilename(comparisonFilename(pair, options, mode), usedNames);
       if (asZip) files.push({ name, data: blob });
       else downloadBlob(blob, name);
-      setExportProgress(index + 1, pairs.length);
+      setExportProgress(index + 1, pairs.length, options.format);
       if (!asZip) await new Promise((resolve) => setTimeout(resolve, 80));
     }
     if (asZip) {
+      setExportIndeterminate("Creating ZIP…");
       const zip = await buildZip(files);
       downloadBlob(zip, `${safeFilename(state.project.name)}-comparisons.zip`);
     }
@@ -853,8 +1013,7 @@ async function exportAll(asZip) {
   } catch (error) {
     showToast(`Export failed: ${error.message}`, "error", 7000);
   } finally {
-    state.exportBusy = false;
-    setTimeout(() => { $("#exportProgress").hidden = true; }, 800);
+    setExportInteractionBusy(false);
   }
 }
 
@@ -1213,12 +1372,21 @@ function bindEvents() {
   $("#exportCurrentButton").addEventListener("click", exportCurrent);
   $("#exportZipButton").addEventListener("click", () => exportAll(true));
   $("#exportAllIndividualButton").addEventListener("click", () => exportAll(false));
-  for (const selector of ["#exportFormat", "#exportLongEdge", "#exportLabels"]) {
-    $(selector).addEventListener("change", updateExportPreview);
-  }
+  $("#exportFormat").addEventListener("change", (event) => {
+    setExportFormat(event.currentTarget.value);
+    updateExportPreview();
+  });
+  $("#exportLongEdge").addEventListener("change", (event) => {
+    state.exportLongEdges[exportLongEdgeKind(state.exportFormat)] = event.currentTarget.value;
+    updateExportPreview();
+  });
+  $("#exportLabels").addEventListener("change", updateExportPreview);
   $("#exportQuality").addEventListener("input", (event) => {
     rangeProgress(event.currentTarget);
-    updateExportPreview();
+    $("#exportQualityOutput").textContent = `${event.currentTarget.value}%`;
+  });
+  elements.exportDialog.addEventListener("cancel", (event) => {
+    if (state.exportBusy) event.preventDefault();
   });
 
   $("#themeToggle").addEventListener("click", () => {
@@ -1229,6 +1397,11 @@ function bindEvents() {
   });
 
   document.addEventListener("keydown", (event) => {
+    if (state.exportBusy) return;
+    if (elements.exportDialog.open) {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "s") event.preventDefault();
+      return;
+    }
     if (event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement || event.target instanceof HTMLTextAreaElement) return;
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "s") {
       event.preventDefault();

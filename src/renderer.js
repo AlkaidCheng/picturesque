@@ -49,6 +49,14 @@ export function computeExportSize(project, pair, longEdge = 2400, includeLabels 
   return { width: Math.max(1, Math.round(requested * ratio)), height: requested };
 }
 
+export function resolveBlinkLayer(images, blinkPhase = 0) {
+  const showRight = blinkPhase % 2 === 1 && images.right;
+  return {
+    image: showRight ? images.right : images.left ?? images.right,
+    layer: showRight ? "right" : images.left ? "left" : "right"
+  };
+}
+
 function imagePromise(source) {
   return new Promise((resolve, reject) => {
     const image = new Image();
@@ -348,9 +356,7 @@ export class ComparisonRenderer {
     const viewport = imageViewport(panel, labels);
     drawPanelBackground(context, viewport, settings.background);
     if (mode === "blink") {
-      const showRight = options.blinkPhase % 2 === 1 && images.right;
-      const image = showRight ? images.right : images.left ?? images.right;
-      const layer = showRight ? "right" : images.left ? "left" : "right";
+      const { image, layer } = resolveBlinkLayer(images, options.blinkPhase);
       image ? drawLayer(context, image, viewport, settings, layer) : drawMissing(context, viewport, "No mapped image");
     } else {
       images.left ? drawLayer(context, images.left, viewport, settings, "left") : drawMissing(context, viewport, "No image in A");
@@ -401,24 +407,15 @@ export class ComparisonRenderer {
     this.drawComparison(context, { x: 0, y: 0, width: size.width, height: size.height }, project, pair, images, {
       includeGrid: false,
       includeLabels,
-      blinkPhase: 0
+      blinkPhase: exportOptions.blinkPhase ?? 0
     });
     return canvas;
   }
 
-  async renderBlob(project, pair, exportOptions = {}) {
-    const canvas = await this.renderToCanvas(project, pair, exportOptions);
-    const format = exportOptions.format === "jpeg" ? "image/jpeg" : "image/png";
-    const quality = clamp(Number(exportOptions.quality ?? 0.92), 0.6, 1);
-    const blob = await new Promise((resolve, reject) => {
-      canvas.toBlob((value) => value ? resolve(value) : reject(new Error("The browser could not encode the comparison.")), format, quality);
-    });
-    return { blob, width: canvas.width, height: canvas.height };
-  }
-
-  async renderPreview(targetCanvas, project, pair, exportOptions = {}) {
+  async renderPreview(targetCanvas, project, pair, exportOptions = {}, shouldCommit = () => true) {
     if (!pair) return;
     const source = await this.renderToCanvas(project, pair, { ...exportOptions, longEdge: 800 });
+    if (!shouldCommit()) return;
     const bounds = targetCanvas.getBoundingClientRect();
     const ratio = Math.min(globalThis.devicePixelRatio || 1, 2);
     targetCanvas.width = Math.max(1, Math.round(bounds.width * ratio));

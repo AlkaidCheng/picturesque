@@ -5,6 +5,16 @@ export interface ExportSizeOption {
   label: string;
 }
 
+export interface ComparisonArchiveFilenameOptions {
+  projectName?: string | null;
+  leftCollectionName?: string | null;
+  rightCollectionName?: string | null;
+  comparisonMode?: string | null;
+}
+
+const ARCHIVE_SEGMENT_MAX_BYTES = 48;
+const UTF8_ENCODER = new TextEncoder();
+
 const STATIC_SIZE_OPTIONS: readonly ExportSizeOption[] = Object.freeze([
   { value: "1600", label: "1600 px" },
   { value: "2400", label: "2400 px" },
@@ -41,6 +51,65 @@ export function coerceExportLongEdge(format: ExportFormat, value: string): strin
 
 export function canExportAnimatedGif(comparisonMode: string, hasRightCollection: boolean): boolean {
   return comparisonMode === "blink" && hasRightCollection;
+}
+
+function utf8Prefix(value: string, maximumBytes: number): string {
+  let byteLength = 0;
+  let result = "";
+  for (const character of value) {
+    const characterBytes = UTF8_ENCODER.encode(character).byteLength;
+    if (byteLength + characterBytes > maximumBytes) break;
+    byteLength += characterBytes;
+    result += character;
+  }
+  return result.replace(/-+$/u, "");
+}
+
+function filenameHash(value: string): string {
+  let hash = 0x811c9dc5;
+  for (const byte of UTF8_ENCODER.encode(value)) {
+    hash ^= byte;
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return (hash >>> 0).toString(16).padStart(8, "0");
+}
+
+function truncateUtf8(value: string, maximumBytes: number): string {
+  if (UTF8_ENCODER.encode(value).byteLength <= maximumBytes) return value;
+  const suffix = `-${filenameHash(value)}`;
+  const prefixBytes = maximumBytes - UTF8_ENCODER.encode(suffix).byteLength;
+  return `${utf8Prefix(value, prefixBytes)}${suffix}`;
+}
+
+function normalizeArchiveFilenameSegment(
+  value: string | null | undefined,
+  fallback: string
+): string {
+  const normalized = (value ?? "")
+    .normalize("NFKC")
+    .toLowerCase()
+    .normalize("NFC")
+    .replace(/['’]+/gu, "")
+    .replace(/[^\p{Letter}\p{Number}\p{Mark}]+/gu, "-")
+    .replace(/^-+|-+$/gu, "")
+    .replace(/^\p{Mark}+/u, "");
+  return truncateUtf8(normalized, ARCHIVE_SEGMENT_MAX_BYTES) || fallback;
+}
+
+export function comparisonArchiveFilename({
+  projectName,
+  leftCollectionName,
+  rightCollectionName,
+  comparisonMode
+}: ComparisonArchiveFilenameOptions): string {
+  const project = normalizeArchiveFilenameSegment(projectName, "project");
+  const left = normalizeArchiveFilenameSegment(leftCollectionName, "set-a");
+  const mode = normalizeArchiveFilenameSegment(comparisonMode, "comparison");
+  const hasRightCollection = rightCollectionName !== null && rightCollectionName !== undefined;
+  const collections = hasRightCollection
+    ? `${left}-vs-${normalizeArchiveFilenameSegment(rightCollectionName, "set-b")}`
+    : left;
+  return `${project}_${collections}_${mode}.zip`;
 }
 
 export function uniqueExportFilename(filename: string, usedNames: Set<string>): string {

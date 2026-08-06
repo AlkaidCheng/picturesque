@@ -1233,6 +1233,12 @@ svg {
   gap: 8px;
 }
 
+.control-help {
+  color: var(--text-soft);
+  font-size: 9px;
+  line-height: 1.35;
+}
+
 .range-field strong {
   font-weight: 550;
 }
@@ -1683,6 +1689,25 @@ dialog {
   width: var(--export-progress, 0%);
   background: var(--accent-soft);
   transition: width 180ms ease;
+}
+
+.export-progress.indeterminate > span {
+  width: 34%;
+  animation: export-indeterminate 1.1s ease-in-out infinite;
+}
+
+@keyframes export-indeterminate {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(310%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .export-progress.indeterminate > span {
+    width: 100%;
+    animation: none;
+    opacity: 0.5;
+    transform: none;
+  }
 }
 
 .export-progress strong,

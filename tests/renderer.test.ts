@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 
-import { test } from "vitest";
+import { afterEach, test, vi } from "vitest";
 
 import {
   addImages,
@@ -10,7 +10,17 @@ import {
   getActivePairs,
   setComparisonMode
 } from "../src/project.js";
-import { comparisonAspect, computeExportSize, resolveFrameRatio } from "../src/renderer.js";
+import {
+  ComparisonRenderer,
+  comparisonAspect,
+  computeExportSize,
+  resolveBlinkLayer,
+  resolveFrameRatio
+} from "../src/renderer.js";
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
 
 function requireValue<T>(value: T | null | undefined): T {
   assert.ok(value);
@@ -101,4 +111,41 @@ test("export dimensions clamp the requested long edge", () => {
 
   assert.deepEqual(computeExportSize(project, pair, 1, false), { width: 427, height: 640 });
   assert.deepEqual(computeExportSize(project, pair, 100_000, false), { width: 5461, height: 8192 });
+});
+
+test("Blink phases select collection A then collection B", () => {
+  const left = { id: "left" };
+  const right = { id: "right" };
+  const images = { left, right };
+
+  assert.deepEqual(resolveBlinkLayer(images, 0), { image: left, layer: "left" });
+  assert.deepEqual(resolveBlinkLayer(images, 1), { image: right, layer: "right" });
+  assert.deepEqual(resolveBlinkLayer(images, 2), { image: left, layer: "left" });
+});
+
+test("export rendering forwards an explicit Blink phase to the compositor", async () => {
+  const project = pairedProject();
+  const pair = requireValue(getActivePairs(project)[0]);
+  setComparisonMode(project, "blink");
+  const canvas = {
+    width: 0,
+    height: 0,
+    getContext: () => ({})
+  };
+  vi.stubGlobal("document", { createElement: () => canvas });
+  const renderer = Object.create(ComparisonRenderer.prototype);
+  renderer.loadPair = async () => ({ left: {}, right: {}, leftRecord: {}, rightRecord: {} });
+  let drawOptions;
+  renderer.drawComparison = (...args: unknown[]) => {
+    drawOptions = args[5];
+  };
+
+  await renderer.renderToCanvas(project, pair, {
+    format: "gif",
+    longEdge: 640,
+    includeLabels: false,
+    blinkPhase: 1
+  });
+
+  assert.deepEqual(drawOptions, { includeGrid: false, includeLabels: false, blinkPhase: 1 });
 });

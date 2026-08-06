@@ -445,43 +445,45 @@
       </div>
     </dialog>
 
-    <dialog id="exportDialog" class="modal export-modal">
+    <dialog id="exportDialog" class="modal export-modal" aria-labelledby="exportDialogHeading">
       <div class="modal-heading">
-        <div><span class="eyebrow">Render comparison</span><h2>Export</h2></div>
+        <div><span class="eyebrow">Render comparison</span><h2 id="exportDialogHeading">Export</h2></div>
         <button class="icon-button" data-close-dialog aria-label="Close"><svg><use href="#icon-x"></use></svg></button>
       </div>
       <div class="export-layout">
         <div class="export-preview-card">
-          <canvas id="exportPreviewCanvas"></canvas>
+          <canvas id="exportPreviewCanvas" role="img" aria-label="Scaled export preview"></canvas>
           <div><strong id="exportPreviewName">Current pair</strong><span id="exportPreviewDimensions">—</span></div>
         </div>
         <div class="export-controls">
           <div class="control-grid two">
             <label class="control-field">
               <span>Format</span>
-              <select id="exportFormat"><option value="png">PNG</option><option value="jpeg">JPEG</option></select>
+              <select id="exportFormat" aria-describedby="exportFormatHelp"><option value="png">PNG</option><option value="jpeg">JPEG</option><option value="gif" disabled>GIF (Blink mode only)</option></select>
+              <small class="control-help" id="exportFormatHelp">Animated GIF becomes available when two collections are compared in Blink mode.</small>
             </label>
             <label class="control-field">
               <span>Long edge</span>
-              <select id="exportLongEdge"><option value="1600">1600 px</option><option value="2400" selected>2400 px</option><option value="3840">3840 px</option><option value="original">Source size</option></select>
+              <select id="exportLongEdge" aria-describedby="exportLongEdgeHelp"><option value="1600">1600 px</option><option value="2400" selected>2400 px</option><option value="3840">3840 px</option><option value="original">Largest source edge</option></select>
+              <small class="control-help" id="exportLongEdgeHelp">The aspect ratio is preserved.</small>
             </label>
           </div>
           <label class="range-field" id="exportQualityField">
             <span><strong>JPEG quality</strong><output id="exportQualityOutput">92%</output></span>
-            <input id="exportQuality" type="range" min="60" max="100" value="92" />
+            <input id="exportQuality" type="range" min="60" max="100" value="92" aria-label="JPEG quality" />
           </label>
           <label class="toggle-field">
             <span><strong>Include labels</strong><small>Use the current collection filenames.</small></span>
             <input id="exportLabels" type="checkbox" checked />
           </label>
-          <div class="export-note"><svg><use href="#icon-info"></use></svg><span>ZIP export renders every mapped pair with the current comparison mode and each pair’s saved tuning.</span></div>
+          <div class="export-note"><svg><use href="#icon-info"></use></svg><span id="exportNoteText">ZIP creates one PNG per mapped pair with the current comparison mode and each pair’s saved tuning.</span></div>
         </div>
       </div>
-      <div class="export-progress" id="exportProgress" hidden><span></span><strong>Rendering comparisons…</strong><small id="exportProgressText">0 / 0</small></div>
+      <div class="export-progress" id="exportProgress" role="progressbar" aria-live="polite" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" hidden><span></span><strong>Rendering comparisons…</strong><small id="exportProgressText">0 / 0</small></div>
       <div class="modal-actions export-actions">
-        <button class="button ghost" id="exportAllIndividualButton" type="button">Download all separately</button>
-        <button class="button secondary" id="exportZipButton" type="button">Export all as ZIP</button>
-        <button class="button primary" id="exportCurrentButton" type="button"><svg><use href="#icon-download"></use></svg>Export current</button>
+        <button class="button ghost" id="exportAllIndividualButton" type="button" aria-describedby="exportNoteText">Download all separately</button>
+        <button class="button secondary" id="exportZipButton" type="button" aria-describedby="exportNoteText">Export all as ZIP</button>
+        <button class="button primary" id="exportCurrentButton" type="button" aria-describedby="exportNoteText"><svg><use href="#icon-download"></use></svg><span id="exportCurrentButtonLabel">Export current</span></button>
       </div>
     </dialog>
 

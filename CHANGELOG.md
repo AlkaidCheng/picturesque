@@ -7,6 +7,11 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Added
+
+- Export Blink comparisons as looping animated GIFs, individually or in ZIP
+  archives. (#3)
+
 ### Changed
 
 - Run local development and production builds through Vite. (#1)

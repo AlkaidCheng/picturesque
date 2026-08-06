@@ -26,8 +26,8 @@ interactive version.
 - Tune alignment, framing, opacity, brightness, contrast, saturation, warmth,
   and grayscale independently for each layer.
 - Save projects in browser storage or download a portable project file.
-- Export the current comparison as PNG or JPEG, export every pair, or download
-  a ZIP archive.
+- Export still comparisons as PNG or JPEG and Blink comparisons as looping
+  GIFs, one at a time or as a ZIP archive.
 
 ## Run locally
 
